@@ -372,9 +372,7 @@ function stopName(s) {
 
 function isWarehouse(s, idx) {
   return s.isWarehouse === true || s.type === 'warehouse' ||
-         (idx === 0 && (
-           /warehouse|hub|depot|farm|base/i.test(stopName(s)) || s.isWarehouse !== false
-         ));
+         /warehouse|hub|depot|farm|base/i.test(stopName(s));
 }
 
 /* ── LOGIN ── */
