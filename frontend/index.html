@@ -25,239 +25,300 @@
       --shadow-sm:   0 1px 4px rgba(0,0,0,.10);
       --shadow:      0 2px 12px rgba(0,0,0,.13);
       --shadow-lg:   0 8px 28px rgba(0,0,0,.18);
-      --radius:      14px;
-      --radius-sm:   8px;
+      --radius:      16px;
+      --radius-sm:   10px;
     }
 
-    body {
+    html, body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--green-bg);
       color: var(--gray-dark);
       min-height: 100dvh;
       -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
 
-    /* ── SCREENS ────────────────────────────────── */
-    .screen { display: none; }
+    /* ── SCREENS ── */
+    .screen { display: none; min-height: 100dvh; }
     .screen.active { display: block; }
 
-    /* ── LOGIN ──────────────────────────────────── */
+    /* ── SCREEN TRANSITION ── */
+    .screen.slide-in {
+      animation: slideIn .3s ease forwards;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
+       LOGIN
+    ══════════════════════════════ */
     #loginScreen {
       min-height: 100dvh;
       background: linear-gradient(160deg, #0d2b1e 0%, var(--green-dark) 45%, var(--green-mid) 100%);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 24px;
+      padding: 28px 20px;
     }
     #loginScreen.active { display: flex; }
 
-    .login-icon { font-size: 56px; margin-bottom: 10px; }
-    .login-brand { color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
-    .login-tagline { color: rgba(255,255,255,.55); font-size: 13px; margin-bottom: 36px; }
+    .login-icon  { font-size: 60px; margin-bottom: 10px; }
+    .login-brand { color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -0.5px; }
+    .login-tagline { color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 40px; }
 
     .login-card {
-      background: var(--white);
-      border-radius: 22px;
-      padding: 28px 24px 24px;
-      width: 100%; max-width: 380px;
+      background: var(--white); border-radius: 24px;
+      padding: 30px 24px 26px;
+      width: 100%; max-width: 400px;
       box-shadow: var(--shadow-lg);
     }
-    .login-card h2 { font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 20px; }
+    .login-card h2 { font-size: 20px; font-weight: 800; color: var(--green-dark); margin-bottom: 22px; }
 
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700; color: var(--gray);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px;
+    }
     .field input {
-      width: 100%; padding: 14px 16px;
+      width: 100%; padding: 16px 18px;
       border: 2px solid var(--gray-light); border-radius: var(--radius);
-      font-size: 20px; letter-spacing: 3px; color: var(--gray-dark);
-      outline: none; transition: border-color .2s;
-      background: #fafafa;
+      font-size: 22px; letter-spacing: 4px; color: var(--gray-dark);
+      outline: none; transition: border-color .2s; background: #fafafa;
     }
     .field input:focus { border-color: var(--green); background: #fff; }
 
     .error-msg {
-      display: none; color: var(--red);
-      font-size: 13px; margin: 8px 0 4px;
-      padding: 10px 14px; background: #ffeaea; border-radius: var(--radius-sm);
+      display: none; color: var(--red); font-size: 13px;
+      margin: 8px 0 4px; padding: 12px 14px;
+      background: #ffeaea; border-radius: var(--radius-sm);
+      line-height: 1.5;
     }
 
     .btn-primary {
-      width: 100%; padding: 15px; margin-top: 10px;
+      width: 100%; padding: 17px; margin-top: 12px;
       background: var(--green); color: #fff;
       border: none; border-radius: var(--radius);
-      font-size: 16px; font-weight: 700; cursor: pointer;
+      font-size: 17px; font-weight: 700; cursor: pointer;
       transition: background .15s, transform .1s;
+      min-height: 56px;
     }
-    .btn-primary:active { transform: scale(.98); }
-    .btn-primary:hover  { background: var(--green-dark); }
+    .btn-primary:active  { transform: scale(.98); }
+    .btn-primary:hover   { background: var(--green-dark); }
     .btn-primary:disabled { background: var(--gray-light); color: var(--gray); cursor: not-allowed; transform: none; }
 
-    /* ── TOP NAV ────────────────────────────────── */
+    /* ── SUCCESS FLASH after login ── */
+    #loginSuccess {
+      display: none; text-align: center; padding: 16px 0 0;
+    }
+    #loginSuccess.show { display: block; }
+    .success-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-pale); color: var(--green-dark);
+      padding: 10px 20px; border-radius: 30px;
+      font-size: 14px; font-weight: 700;
+    }
+
+    /* ══════════════════════════════
+       TOP NAV
+    ══════════════════════════════ */
     .top-nav {
       background: var(--green-dark); color: #fff;
-      padding: 14px 18px;
+      padding: 16px 18px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 200;
       box-shadow: 0 2px 10px rgba(0,0,0,.25);
     }
-    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
     .nav-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
+      width: 40px; height: 40px; border-radius: 50%;
       background: var(--green-light); color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; flex-shrink: 0;
+      font-size: 18px; font-weight: 800; flex-shrink: 0;
     }
-    .nav-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
-    .nav-phone { font-size: 12px; color: rgba(255,255,255,.6); }
+    .nav-name  { font-size: 16px; font-weight: 700; line-height: 1.2; }
+    .nav-phone { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 1px; }
     .btn-logout {
       background: rgba(255,255,255,.15); border: none; color: #fff;
-      padding: 7px 14px; border-radius: var(--radius-sm);
-      font-size: 13px; font-weight: 600; cursor: pointer;
+      padding: 10px 16px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      min-height: 44px;
     }
 
-    /* ── PAGE CONTENT ───────────────────────────── */
-    .page { padding: 16px; max-width: 540px; margin: 0 auto; }
+    /* ══════════════════════════════
+       ROUTES LIST
+    ══════════════════════════════ */
+    .page { padding: 16px; max-width: 560px; margin: 0 auto; }
 
-    /* ── DATE STRIP ─────────────────────────────── */
     .date-strip {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
       background: #fff; border-radius: var(--radius);
-      padding: 12px 16px; margin-bottom: 14px;
+      padding: 14px 18px; margin-bottom: 16px;
       box-shadow: var(--shadow-sm);
     }
-    .date-strip label { font-size: 12px; font-weight: 600; color: var(--gray); flex-shrink: 0; }
+    .date-strip label { font-size: 12px; font-weight: 700; color: var(--gray); flex-shrink: 0; text-transform: uppercase; letter-spacing: .4px; }
     .date-strip input {
       flex: 1; border: none; outline: none;
-      font-size: 15px; font-weight: 600; color: var(--gray-dark);
-      background: transparent;
+      font-size: 16px; font-weight: 600; color: var(--gray-dark);
+      background: transparent; min-height: 28px;
     }
 
-    /* ── SECTION HEADING ────────────────────────── */
-    .sec-head { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+    .sec-head {
+      font-size: 11px; font-weight: 700; color: var(--gray);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px;
+    }
 
-    /* ── ROUTE CARD ─────────────────────────────── */
     .route-card {
       background: #fff; border-radius: var(--radius);
-      padding: 18px; margin-bottom: 12px;
+      padding: 20px; margin-bottom: 14px;
       box-shadow: var(--shadow-sm); cursor: pointer;
       border-left: 5px solid var(--green);
       transition: box-shadow .15s, transform .1s;
     }
     .route-card:active { transform: scale(.99); box-shadow: var(--shadow); }
 
-    .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .rc-badge { background: var(--green-pale); color: var(--green-dark); font-size: 13px; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
+    .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .rc-badge { background: var(--green-pale); color: var(--green-dark); font-size: 14px; font-weight: 800; padding: 5px 14px; border-radius: 20px; }
     .rc-vehicle { font-size: 13px; color: var(--gray); }
 
-    .rc-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
-    .rc-stat { font-size: 13px; }
-    .rc-stat .lbl { font-size: 11px; color: var(--gray); display: block; }
+    .rc-stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+    .rc-stat { font-size: 14px; font-weight: 600; }
+    .rc-stat .lbl { font-size: 11px; color: var(--gray); font-weight: 400; display: block; margin-bottom: 2px; }
 
-    .rc-progress {}
-    .prog-bar { height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
-    .prog-fill { height: 100%; background: var(--green-light); border-radius: 3px; transition: width .4s; }
-    .prog-text { font-size: 11px; color: var(--gray); margin-top: 4px; }
+    .prog-bar { height: 7px; background: var(--gray-light); border-radius: 4px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--green-light); border-radius: 4px; transition: width .4s; }
+    .prog-text { font-size: 12px; color: var(--gray); margin-top: 5px; }
 
-    /* ── EMPTY / LOADING ────────────────────────── */
-    .empty { text-align: center; padding: 60px 20px; color: var(--gray); }
-    .empty .ico { font-size: 44px; margin-bottom: 10px; }
-    .empty p { font-size: 14px; line-height: 1.5; }
-    .loading-msg { text-align: center; padding: 40px; color: var(--gray); font-size: 14px; }
+    .empty { text-align: center; padding: 70px 20px; color: var(--gray); }
+    .empty .ico { font-size: 48px; margin-bottom: 12px; }
+    .empty p { font-size: 15px; line-height: 1.6; }
+    .loading-msg { text-align: center; padding: 50px; color: var(--gray); font-size: 15px; }
 
-    /* ── ROUTE DETAIL ───────────────────────────── */
+    /* ══════════════════════════════
+       ROUTE DETAIL
+    ══════════════════════════════ */
     #routeDetailScreen { background: var(--green-bg); }
 
-    .detail-header { background: var(--green-dark); color: #fff; padding: 16px 18px 20px; }
+    .detail-header { background: var(--green-dark); color: #fff; padding: 16px 18px 22px; }
     .btn-back {
       background: rgba(255,255,255,.15); border: none; color: #fff;
-      padding: 7px 14px; border-radius: var(--radius-sm);
-      font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 14px;
+      padding: 10px 16px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      margin-bottom: 16px; min-height: 44px;
     }
-    .detail-title { font-size: 22px; font-weight: 800; }
-    .detail-sub   { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 2px; margin-bottom: 16px; }
+    .detail-title { font-size: 24px; font-weight: 800; }
+    .detail-sub   { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 3px; margin-bottom: 18px; }
 
     .detail-stats { display: flex; gap: 10px; flex-wrap: wrap; }
-    .ds { background: rgba(255,255,255,.13); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; }
+    .ds { background: rgba(255,255,255,.13); border-radius: var(--radius-sm); padding: 10px 18px; text-align: center; }
     .ds-val { font-size: 20px; font-weight: 800; line-height: 1; }
-    .ds-lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 2px; }
+    .ds-lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 3px; }
 
-    /* ── STOPS ──────────────────────────────────── */
-    .stops-list { padding: 16px; max-width: 540px; margin: 0 auto; }
+    /* ══════════════════════════════
+       STOPS
+    ══════════════════════════════ */
+    .stops-list { padding: 16px; max-width: 560px; margin: 0 auto; }
 
     .stop-card {
       background: #fff; border-radius: var(--radius);
-      margin-bottom: 10px; box-shadow: var(--shadow-sm); overflow: hidden;
+      margin-bottom: 12px; box-shadow: var(--shadow-sm); overflow: hidden;
       border-left: 5px solid var(--gray-light);
     }
     .stop-card.done    { border-left-color: var(--green-light); }
     .stop-card.partial { border-left-color: var(--orange); }
-    .stop-card.active  { border-left-color: var(--orange); box-shadow: 0 0 0 2px var(--orange), var(--shadow); }
+    .stop-card.wh-card { border-left-color: var(--green-dark); }
 
     .stop-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px; cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px; cursor: pointer; user-select: none;
+      min-height: 72px;
     }
 
     .stop-dot {
-      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       font-size: 15px; font-weight: 800;
     }
-    .stop-dot.wh      { background: var(--green-dark); color: #fff; font-size: 18px; }
-    .stop-dot.done    { background: var(--green-light); color: #fff; }
+    .stop-dot.wh      { background: var(--green-dark); color: #fff; font-size: 20px; }
+    .stop-dot.done    { background: var(--green-light); color: #fff; font-size: 18px; }
     .stop-dot.partial { background: var(--orange); color: #fff; }
     .stop-dot.pending { background: var(--gray-light); color: var(--gray); }
 
     .stop-text { flex: 1; min-width: 0; }
-    .stop-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .stop-sub  { font-size: 12px; color: var(--gray); margin-top: 2px; }
-    .stop-chevron { font-size: 18px; color: var(--gray); transition: transform .2s; }
+
+    /* collapsed: truncate */
+    .stop-name {
+      font-size: 15px; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    /* expanded: show full name */
+    .stop-name.full {
+      white-space: normal; overflow: visible; text-overflow: unset;
+    }
+    .stop-sub  { font-size: 12px; color: var(--gray); margin-top: 3px; line-height: 1.4; }
+    .stop-chevron { font-size: 20px; color: var(--gray); transition: transform .25s; flex-shrink: 0; }
     .stop-chevron.open { transform: rotate(90deg); }
 
-    /* ── STOP BODY (expanded) ───────────────────── */
-    .stop-body { display: none; padding: 0 16px 16px; }
+    /* ── STOP BODY ── */
+    .stop-body { display: none; padding: 0 18px 18px; }
     .stop-body.open { display: block; }
 
     .info-box {
-      border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 10px; font-size: 13px;
+      border-radius: var(--radius-sm); padding: 12px 14px;
+      margin-bottom: 12px; font-size: 14px; line-height: 1.5;
     }
-    .info-box.green { background: var(--green-pale); color: var(--green-dark); }
-    .info-box.orange { background: var(--orange-pale); color: #7c4000; }
+    .info-box.green  { background: var(--green-pale); color: var(--green-dark); }
+    .info-box.blue   { background: #e0f0ff; color: #1a4a7a; }
     .info-box strong { font-weight: 700; }
-    .coords { font-family: 'Menlo', 'Courier New', monospace; font-size: 11px; color: var(--green-mid); margin-top: 4px; }
+    .coords {
+      font-family: 'Menlo', 'Courier New', monospace;
+      font-size: 11px; color: var(--green-mid); margin-top: 4px;
+    }
 
     .action-btn {
-      width: 100%; padding: 13px 16px; border: none; border-radius: var(--radius-sm);
-      font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px;
+      width: 100%; padding: 15px 16px; border: none; border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: opacity .15s, transform .1s;
+      min-height: 52px;
     }
-    .action-btn:active { transform: scale(.98); }
+    .action-btn:active   { transform: scale(.98); }
     .action-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     .btn-checkin { background: var(--green); color: #fff; }
     .btn-photo   { background: var(--orange); color: #fff; }
-    .btn-done    { background: var(--green-pale); color: var(--green-dark); }
 
     .photo-thumb {
-      width: 100%; max-height: 220px; object-fit: cover;
-      border-radius: var(--radius-sm); margin-bottom: 10px; display: none;
+      width: 100%; max-height: 240px; object-fit: cover;
+      border-radius: var(--radius-sm); margin-bottom: 12px; display: none;
     }
 
-    /* ── TOAST ──────────────────────────────────── */
+    .map-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--green); text-decoration: none;
+      font-weight: 700; padding: 8px 0; margin-bottom: 10px;
+    }
+
+    /* ── TIMESTAMP NOTE ── */
+    .ts-note {
+      font-size: 11px; color: var(--gray); margin-top: -6px; margin-bottom: 10px;
+      padding: 0 2px;
+    }
+
+    /* ── TOAST ── */
     .toast {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
       background: var(--green-dark); color: #fff;
-      padding: 11px 22px; border-radius: 30px;
+      padding: 12px 24px; border-radius: 30px;
       font-size: 14px; font-weight: 600;
       box-shadow: var(--shadow-lg); z-index: 999;
       opacity: 0; transition: opacity .25s, transform .25s;
-      pointer-events: none; white-space: nowrap; max-width: 90vw; text-align: center;
+      pointer-events: none; white-space: nowrap;
+      max-width: 90vw; text-align: center;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.err  { background: var(--red); }
-
-    /* ── MAP LINK ───────────────────────────────── */
-    .map-link { font-size: 12px; color: var(--green); text-decoration: none; font-weight: 600; }
 
     #photoInput { display: none; }
   </style>
@@ -274,10 +335,14 @@
     <h2>Sign in to your account</h2>
     <div class="field">
       <label>Your Phone Number</label>
-      <input type="tel" id="phoneInput" placeholder="e.g. 9876543210" maxlength="15" autocomplete="tel">
+      <input type="tel" id="phoneInput" placeholder="e.g. 9876543210"
+             maxlength="15" autocomplete="tel" inputmode="numeric">
     </div>
     <div class="error-msg" id="loginError"></div>
     <button class="btn-primary" id="loginBtn" onclick="login()">Continue →</button>
+    <div id="loginSuccess">
+      <div class="success-badge">✅ <span id="successName"></span>, you're logged in!</div>
+    </div>
   </div>
 </div>
 
@@ -287,7 +352,7 @@
     <div class="nav-left">
       <div class="nav-avatar" id="navAvatar">D</div>
       <div>
-        <div class="nav-name" id="navName">Driver</div>
+        <div class="nav-name"  id="navName">Driver</div>
         <div class="nav-phone" id="navPhone"></div>
       </div>
     </div>
@@ -309,36 +374,41 @@
   <div class="detail-header">
     <button class="btn-back" onclick="showScreen('routesScreen')">← Back</button>
     <div class="detail-title" id="detailTitle">Route 1</div>
-    <div class="detail-sub"  id="detailSub"></div>
+    <div class="detail-sub"   id="detailSub"></div>
     <div class="detail-stats" id="detailStats"></div>
   </div>
   <div class="stops-list" id="stopsList"></div>
 </div>
 
-<!-- Hidden photo input — capture="environment" opens rear camera on mobile -->
+<!-- Photo input: capture="environment" opens rear camera on mobile -->
 <input type="file" id="photoInput" accept="image/*" capture="environment">
 
 <div class="toast" id="toast"></div>
 
 <script>
 'use strict';
-const API = '';  // same origin
+const API = '';
 
-/* ── state ── */
-let driver       = null;
-let currentRoute = null;
-let openStopIdx  = null;
+let driver           = null;
+let currentRoute     = null;
+let openStopIdx      = null;
 let pendingPhotoStop = null;
 
-/* ── utils ── */
 const $ = id => document.getElementById(id);
 
+/* ── screen transitions ── */
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  $(id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'slide-in');
+  });
+  const el = $(id);
+  el.classList.add('active');
+  // trigger animation
+  requestAnimationFrame(() => el.classList.add('slide-in'));
   window.scrollTo(0, 0);
 }
 
+/* ── toast ── */
 let toastTimer;
 function toast(msg, err = false) {
   const el = $('toast');
@@ -348,10 +418,8 @@ function toast(msg, err = false) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-function today() {
-  const d = new Date();
-  return d.toISOString().slice(0, 10);
-}
+/* ── date helpers ── */
+function today() { return new Date().toISOString().slice(0, 10); }
 
 function fmtDate(iso) {
   if (!iso) return '';
@@ -359,23 +427,35 @@ function fmtDate(iso) {
   return `${d}/${m}/${y}`;
 }
 
+/* arrival timestamp → "9:00 AM" */
 function fmtTime(iso) {
   if (!iso) return '';
-  try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  try { return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }); }
   catch { return iso; }
 }
 
-/* resolve stop name from whatever shape stops_json uses */
+/* ETA string "9:00:00 AM" → "9:00 AM" */
+function fmtETA(t) {
+  if (!t) return '';
+  // "12:00:00 PM" → "12:00 PM", "9:00:00 AM" → "9:00 AM"
+  const m = t.match(/(\d{1,2}:\d{2})(?::\d+)?\s*(AM|PM)/i);
+  if (m) return `${m[1]} ${m[2].toUpperCase()}`;
+  return t;
+}
+
+/* ── stop helpers ── */
 function stopName(s) {
-  return s.name || s.outlet || s.outletName || s.customer || `Stop`;
+  return s.name || s.outlet || s.outletName || s.customer || 'Stop';
 }
 
+/* Stop 0 is always the warehouse/starting point */
 function isWarehouse(s, idx) {
-  return s.isWarehouse === true || s.type === 'warehouse' ||
-         /warehouse|hub|depot|farm|base/i.test(stopName(s));
+  return idx === 0;
 }
 
-/* ── LOGIN ── */
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
 async function login() {
   const phone = $('phoneInput').value.trim();
   if (!phone) return;
@@ -385,6 +465,7 @@ async function login() {
   btn.disabled = true;
   btn.textContent = 'Checking…';
   err.style.display = 'none';
+  $('loginSuccess').classList.remove('show');
 
   try {
     const res  = await fetch(`${API}/api/driver/profile?phone=${encodeURIComponent(phone)}`);
@@ -397,36 +478,52 @@ async function login() {
     }
 
     driver = data.driver;
-    $('navName').textContent  = driver.name  || 'Driver';
-    $('navPhone').textContent = driver.phone;
+
+    /* show success flash on login screen first */
+    $('successName').textContent = driver.name || 'Driver';
+    $('loginSuccess').classList.add('show');
+    btn.textContent = '✅ Signed in!';
+
+    /* update nav */
+    $('navName').textContent   = driver.name  || 'Driver';
+    $('navPhone').textContent  = driver.phone;
     $('navAvatar').textContent = (driver.name || 'D')[0].toUpperCase();
     $('datePicker').value = today();
 
-    showScreen('routesScreen');
-    loadRoutes();
+    /* brief pause so user sees confirmation, then switch screen */
+    setTimeout(() => {
+      showScreen('routesScreen');
+      loadRoutes();
+    }, 900);
+
   } catch {
     err.textContent = '⚠️ Connection error. Please check your network.';
     err.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Continue →';
+    /* re-enable after delay (so user sees the ✅ state) */
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Continue →';
+    }, 1000);
   }
 }
 
 function logout() {
-  driver = null;
-  currentRoute = null;
+  driver = null; currentRoute = null;
   $('phoneInput').value = '';
+  $('loginSuccess').classList.remove('show');
+  $('loginError').style.display = 'none';
   showScreen('loginScreen');
 }
 
 $('phoneInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 
-/* ── ROUTES LIST ── */
+/* ══════════════════════════════
+   ROUTES LIST
+══════════════════════════════ */
 async function loadRoutes() {
   const date = $('datePicker').value;
   if (!date || !driver) return;
-
   $('routesList').innerHTML = '<div class="loading-msg">Loading routes…</div>';
   try {
     const res  = await fetch(`${API}/api/driver/routes?phone=${encodeURIComponent(driver.phone)}&date=${date}`);
@@ -443,11 +540,11 @@ function renderList(routes, date) {
     return;
   }
   $('routesList').innerHTML = routes.map(r => {
-    const stops    = r.stops || [];
-    const custStops = stops.filter((s, i) => !isWarehouse(s, i));
-    const checked   = (r.checkins || []).length;
-    const pct       = custStops.length ? Math.round(checked / custStops.length * 100) : 0;
-    const allDone   = checked >= custStops.length && custStops.length > 0;
+    const stops      = r.stops || [];
+    const custStops  = stops.filter((s, i) => !isWarehouse(s, i));
+    const checked    = (r.checkins || []).length;
+    const pct        = custStops.length ? Math.round(checked / custStops.length * 100) : 0;
+    const allDone    = checked >= custStops.length && custStops.length > 0;
 
     return `<div class="route-card" onclick='openRoute(${JSON.stringify(JSON.stringify(r))}, "${date}")'>
       <div class="rc-top">
@@ -456,8 +553,8 @@ function renderList(routes, date) {
       </div>
       <div class="rc-stats">
         <div class="rc-stat"><span class="lbl">Stops</span>${custStops.length}</div>
-        <div class="rc-stat"><span class="lbl">Dispatch</span>${r.dispatch_time || '—'}</div>
-        <div class="rc-stat"><span class="lbl">Return by</span>${r.return_time || '—'}</div>
+        <div class="rc-stat"><span class="lbl">Dispatch</span>${fmtETA(r.dispatch_time) || '—'}</div>
+        <div class="rc-stat"><span class="lbl">Return by</span>${fmtETA(r.return_time) || '—'}</div>
         ${r.total_distance ? `<div class="rc-stat"><span class="lbl">Distance</span>${(+r.total_distance).toFixed(1)} km</div>` : ''}
       </div>
       <div class="rc-progress">
@@ -469,27 +566,30 @@ function renderList(routes, date) {
 }
 
 function openRoute(jsonStr, date) {
-  currentRoute         = JSON.parse(jsonStr);
-  currentRoute._date   = date;
-  openStopIdx          = null;
+  currentRoute       = JSON.parse(jsonStr);
+  currentRoute._date = date;
+  openStopIdx        = null;
   renderDetail();
   showScreen('routeDetailScreen');
 }
 
-/* ── ROUTE DETAIL ── */
+/* ══════════════════════════════
+   ROUTE DETAIL
+══════════════════════════════ */
 function renderDetail() {
   const r     = currentRoute;
   const stops = r.stops || [];
 
   $('detailTitle').textContent = `Route ${r.route_number}`;
-  $('detailSub').textContent   = `${fmtDate(r._date)}${r.vehicle ? ' · ' + r.vehicle : ''}${r.vehicle_number ? ' · ' + r.vehicle_number : ''}`;
+  $('detailSub').textContent   =
+    `${fmtDate(r._date)}${r.vehicle ? ' · ' + r.vehicle : ''}${r.vehicle_number ? ' · ' + r.vehicle_number : ''}`;
 
   const custStops = stops.filter((s, i) => !isWarehouse(s, i));
   $('detailStats').innerHTML = [
-    custStops.length  ? `<div class="ds"><div class="ds-val">${custStops.length}</div><div class="ds-lbl">Stops</div></div>` : '',
-    r.total_distance  ? `<div class="ds"><div class="ds-val">${(+r.total_distance).toFixed(0)}</div><div class="ds-lbl">km</div></div>` : '',
-    r.dispatch_time   ? `<div class="ds"><div class="ds-val">${r.dispatch_time}</div><div class="ds-lbl">Dispatch</div></div>` : '',
-    r.return_time     ? `<div class="ds"><div class="ds-val">${r.return_time}</div><div class="ds-lbl">Return</div></div>` : '',
+    custStops.length ? `<div class="ds"><div class="ds-val">${custStops.length}</div><div class="ds-lbl">Stops</div></div>` : '',
+    r.total_distance ? `<div class="ds"><div class="ds-val">${(+r.total_distance).toFixed(0)}</div><div class="ds-lbl">km</div></div>` : '',
+    r.dispatch_time  ? `<div class="ds"><div class="ds-val">${fmtETA(r.dispatch_time)}</div><div class="ds-lbl">Dispatch</div></div>` : '',
+    r.return_time    ? `<div class="ds"><div class="ds-val">${fmtETA(r.return_time)}</div><div class="ds-lbl">Return</div></div>` : '',
   ].join('');
 
   const checkins = r.checkins || [];
@@ -502,25 +602,24 @@ function renderDetail() {
 
     const fullyDone = wh ? !!checkin : (!!checkin && !!photo);
     const partial   = !wh && !!checkin && !photo;
-    const cardCls   = fullyDone ? 'done' : partial ? 'partial' : '';
     const isOpen    = openStopIdx === idx;
 
+    const cardCls = wh ? 'wh-card' : fullyDone ? 'done' : partial ? 'partial' : '';
     const dotCls  = wh ? 'wh' : fullyDone ? 'done' : partial ? 'partial' : 'pending';
     const dotTxt  = wh ? '🏭' : fullyDone ? '✓' : idx;
-    const chevron = isOpen ? ' open' : '';
-    const bodyOpen = isOpen ? ' open' : '';
 
-    const name = stopName(stop);
-    const lat  = stop.lat  || stop.latitude;
-    const lon  = stop.lon  || stop.lng || stop.longitude;
+    const name   = stopName(stop);
+    const lat    = stop.lat || stop.latitude;
+    const lon    = stop.lon || stop.lng || stop.longitude;
     const weight = stop.weight || stop.totalWeight || stop.crates || '';
-    const eta    = stop.eta || '';
+    const weightFmt = weight ? (+weight).toFixed(2) : '';
+    const eta    = fmtETA(stop.eta || '');
 
     const subParts = [];
-    if (wh)     subParts.push('Starting point — Warehouse');
+    if (wh) subParts.push('Warehouse — Starting Point');
     else {
-      if (weight) subParts.push(`${weight} kg`);
-      if (eta)    subParts.push(`ETA: ${eta}`);
+      if (weightFmt) subParts.push(`${weightFmt} kg`);
+      if (eta)       subParts.push(`ETA: ${eta}`);
     }
 
     const mapUrl = (lat && lon)
@@ -532,43 +631,36 @@ function renderDetail() {
   <div class="stop-header" onclick="toggleStop(${idx})">
     <div class="stop-dot ${dotCls}">${dotTxt}</div>
     <div class="stop-text">
-      <div class="stop-name">${name}</div>
+      <div class="stop-name${isOpen ? ' full' : ''}">${name}</div>
       <div class="stop-sub">${subParts.join(' · ') || '&nbsp;'}</div>
     </div>
-    <span class="stop-chevron${chevron}">›</span>
+    <span class="stop-chevron${isOpen ? ' open' : ''}">›</span>
   </div>
 
-  <div class="stop-body${bodyOpen}" id="sb${idx}">
+  <div class="stop-body${isOpen ? ' open' : ''}" id="sb${idx}">
 
-    <!-- navigation link -->
-    <div style="margin-bottom:10px;">
-      <a class="map-link" href="${mapUrl}" target="_blank" rel="noopener">🗺 Open in Maps</a>
-    </div>
+    <a class="map-link" href="${mapUrl}" target="_blank" rel="noopener">🗺 Open in Maps</a>
 
-    <!-- checkin status -->
     ${checkin ? `
       <div class="info-box green">
         <strong>📍 Arrived</strong> at ${fmtTime(checkin.checked_in_at)}
-        <div class="coords">${(+checkin.lat).toFixed(5)}, ${(+checkin.lon).toFixed(5)}
-          ${checkin.accuracy ? ` ±${Math.round(checkin.accuracy)}m` : ''}
-        </div>
+        <div class="coords">${(+checkin.lat).toFixed(5)}, ${(+checkin.lon).toFixed(5)}${checkin.accuracy ? ` ±${Math.round(checkin.accuracy)}m` : ''}</div>
       </div>` : ''}
 
-    <!-- checkin button -->
     <button class="action-btn btn-checkin" id="btnCI${idx}"
       onclick="checkIn(${idx})" ${checkin ? 'disabled' : ''}>
       ${checkin ? '✅ Checked In' : '📍 Mark Arrival & Capture Location'}
     </button>
+    ${!checkin ? `<p class="ts-note">Records your GPS location + exact arrival time</p>` : ''}
 
-    <!-- photo section (not for warehouse) -->
     ${!wh ? `
-      ${photo
-        ? `<img src="${photo.photo_data}" class="photo-thumb" id="pt${idx}" style="display:block">`
-        : `<img class="photo-thumb" id="pt${idx}">`}
+      ${photo ? `<img src="${photo.photo_data}" class="photo-thumb" style="display:block">` : ''}
       <button class="action-btn btn-photo" id="btnPH${idx}"
         onclick="triggerPhoto(${idx})" ${photo ? 'disabled' : ''}>
-        ${photo ? '✅ Temperature Photo Saved' : '📷 Upload Temperature Photo'}
-      </button>` : ''}
+        ${photo ? '✅ Temperature Photo Saved' : '📷 Take Temperature Photo'}
+      </button>
+      ${!photo ? `<p class="ts-note">Opens camera directly on mobile · Records upload time</p>` : ''}
+    ` : ''}
 
   </div>
 </div>`;
@@ -577,16 +669,16 @@ function renderDetail() {
 
 function toggleStop(idx) {
   openStopIdx = openStopIdx === idx ? null : idx;
-  // re-render detail to update chevrons + open state
   renderDetail();
-  // scroll to card
   setTimeout(() => {
     const el = $(`sc${idx}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 50);
 }
 
-/* ── CHECK-IN ── */
+/* ══════════════════════════════
+   CHECK-IN (GPS)
+══════════════════════════════ */
 function checkIn(stopIdx) {
   const btn = $(`btnCI${stopIdx}`);
   if (!btn || btn.disabled) return;
@@ -595,66 +687,53 @@ function checkIn(stopIdx) {
 
   if (!navigator.geolocation) {
     toast('GPS not supported on this device', true);
-    btn.disabled = false;
-    btn.textContent = '📍 Mark Arrival & Capture Location';
+    btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
-    async pos => {
-      const { latitude: lat, longitude: lon, accuracy } = pos.coords;
-      try {
-        const stop = currentRoute.stops[stopIdx];
-        const body = {
-          driver_phone: driver.phone,
-          driver_name:  driver.name,
-          route_date:   currentRoute._date,
-          route_number: currentRoute.route_number,
-          stop_index:   stopIdx,
-          stop_name:    stopName(stop),
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lon, accuracy } = pos.coords;
+    try {
+      const stop = currentRoute.stops[stopIdx];
+      const res = await fetch(`${API}/api/driver/checkin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          driver_phone: driver.phone, driver_name: driver.name,
+          route_date: currentRoute._date, route_number: currentRoute.route_number,
+          stop_index: stopIdx, stop_name: stopName(stop),
           lat, lon, accuracy,
           type: isWarehouse(stop, stopIdx) ? 'warehouse' : 'stop'
-        };
-        const res = await fetch(`${API}/api/driver/checkin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        if (!res.ok) throw new Error();
+        })
+      });
+      if (!res.ok) throw new Error();
 
-        if (!currentRoute.checkins) currentRoute.checkins = [];
-        currentRoute.checkins = currentRoute.checkins.filter(c => c.stop_index !== stopIdx);
-        currentRoute.checkins.push({ stop_index: stopIdx, lat, lon, accuracy, checked_in_at: new Date().toISOString() });
+      if (!currentRoute.checkins) currentRoute.checkins = [];
+      currentRoute.checkins = currentRoute.checkins.filter(c => c.stop_index !== stopIdx);
+      currentRoute.checkins.push({ stop_index: stopIdx, lat, lon, accuracy, checked_in_at: new Date().toISOString() });
 
-        toast(`📍 Location saved! ±${Math.round(accuracy)}m`);
-        renderDetail();
-        openStopIdx = stopIdx;
-        // re-open the expanded card
-        setTimeout(() => {
-          const sb = $(`sb${stopIdx}`);
-          if (sb) sb.classList.add('open');
-        }, 0);
-      } catch {
-        toast('Failed to save check-in', true);
-        btn.disabled = false;
-        btn.textContent = '📍 Mark Arrival & Capture Location';
-      }
-    },
-    err => {
-      const msgs = {
-        1: 'Location permission denied. Enable GPS in browser settings.',
-        2: 'Location unavailable. Try moving outdoors.',
-        3: 'GPS timed out. Try again.'
-      };
-      toast(msgs[err.code] || 'GPS error', true);
-      btn.disabled = false;
-      btn.textContent = '📍 Mark Arrival & Capture Location';
-    },
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
-  );
+      toast(`📍 Arrival recorded! ±${Math.round(accuracy)}m`);
+      renderDetail();
+      openStopIdx = stopIdx;
+      setTimeout(() => { const sb = $(`sb${stopIdx}`); if (sb) sb.classList.add('open'); }, 0);
+    } catch {
+      toast('Failed to save check-in', true);
+      btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
+    }
+  }, err => {
+    const msgs = {
+      1: 'Location permission denied. Enable GPS in settings.',
+      2: 'Location unavailable. Try moving outdoors.',
+      3: 'GPS timed out. Try again.'
+    };
+    toast(msgs[err.code] || 'GPS error', true);
+    btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
+  }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
 }
 
-/* ── PHOTO ── */
+/* ══════════════════════════════
+   PHOTO UPLOAD
+══════════════════════════════ */
 function triggerPhoto(stopIdx) {
   pendingPhotoStop = stopIdx;
   $('photoInput').click();
@@ -672,18 +751,14 @@ $('photoInput').addEventListener('change', async e => {
   try {
     const compressed = await compressImage(file, 1024, 0.80);
     const stop = currentRoute.stops[idx];
-
     const res = await fetch(`${API}/api/driver/photo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        driver_phone: driver.phone,
-        driver_name:  driver.name,
-        route_date:   currentRoute._date,
-        route_number: currentRoute.route_number,
-        stop_index:   idx,
-        stop_name:    stopName(stop),
-        photo_data:   compressed
+        driver_phone: driver.phone, driver_name: driver.name,
+        route_date: currentRoute._date, route_number: currentRoute.route_number,
+        stop_index: idx, stop_name: stopName(stop),
+        photo_data: compressed
       })
     });
     if (!res.ok) throw new Error();
@@ -695,13 +770,10 @@ $('photoInput').addEventListener('change', async e => {
     toast('📷 Temperature photo saved!');
     renderDetail();
     openStopIdx = idx;
-    setTimeout(() => {
-      const sb = $(`sb${idx}`);
-      if (sb) sb.classList.add('open');
-    }, 0);
+    setTimeout(() => { const sb = $(`sb${idx}`); if (sb) sb.classList.add('open'); }, 0);
   } catch {
     toast('Photo upload failed', true);
-    if (btn) { btn.disabled = false; btn.textContent = '📷 Upload Temperature Photo'; }
+    if (btn) { btn.disabled = false; btn.textContent = '📷 Take Temperature Photo'; }
   }
   e.target.value = '';
 });
@@ -727,7 +799,6 @@ function compressImage(file, maxW, quality) {
   });
 }
 
-/* ── INIT ── */
 $('datePicker').value = today();
 </script>
 </body>
