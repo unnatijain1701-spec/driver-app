@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1b4332">
+  <title>Urban Harvest · Driver</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #1b4332;
+      --green:       #2d6a4f;
+      --green-mid:   #40916c;
+      --green-light: #52b788;
+      --green-pale:  #d8f3dc;
+      --green-bg:    #f0f7f2;
+      --orange:      #e07a1f;
+      --orange-pale: #fef3e2;
+      --red:         #c0392b;
+      --gray-dark:   #1f2937;
+      --gray:        #6b7280;
+      --gray-light:  #e5e7eb;
+      --white:       #ffffff;
+      --shadow-sm:   0 1px 4px rgba(0,0,0,.10);
+      --shadow:      0 2px 12px rgba(0,0,0,.13);
+      --shadow-lg:   0 8px 28px rgba(0,0,0,.18);
+      --radius:      14px;
+      --radius-sm:   8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--green-bg);
+      color: var(--gray-dark);
+      min-height: 100dvh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── SCREENS ────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── LOGIN ──────────────────────────────────── */
+    #loginScreen {
+      min-height: 100dvh;
+      background: linear-gradient(160deg, #0d2b1e 0%, var(--green-dark) 45%, var(--green-mid) 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    #loginScreen.active { display: flex; }
+
+    .login-icon { font-size: 56px; margin-bottom: 10px; }
+    .login-brand { color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .login-tagline { color: rgba(255,255,255,.55); font-size: 13px; margin-bottom: 36px; }
+
+    .login-card {
+      background: var(--white);
+      border-radius: 22px;
+      padding: 28px 24px 24px;
+      width: 100%; max-width: 380px;
+      box-shadow: var(--shadow-lg);
+    }
+    .login-card h2 { font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 20px; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid var(--gray-light); border-radius: var(--radius);
+      font-size: 20px; letter-spacing: 3px; color: var(--gray-dark);
+      outline: none; transition: border-color .2s;
+      background: #fafafa;
+    }
+    .field input:focus { border-color: var(--green); background: #fff; }
+
+    .error-msg {
+      display: none; color: var(--red);
+      font-size: 13px; margin: 8px 0 4px;
+      padding: 10px 14px; background: #ffeaea; border-radius: var(--radius-sm);
+    }
+
+    .btn-primary {
+      width: 100%; padding: 15px; margin-top: 10px;
+      background: var(--green); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:hover  { background: var(--green-dark); }
+    .btn-primary:disabled { background: var(--gray-light); color: var(--gray); cursor: not-allowed; transform: none; }
+
+    /* ── TOP NAV ────────────────────────────────── */
+    .top-nav {
+      background: var(--green-dark); color: #fff;
+      padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 200;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--green-light); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; flex-shrink: 0;
+    }
+    .nav-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .nav-phone { font-size: 12px; color: rgba(255,255,255,.6); }
+    .btn-logout {
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      padding: 7px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+
+    /* ── PAGE CONTENT ───────────────────────────── */
+    .page { padding: 16px; max-width: 540px; margin: 0 auto; }
+
+    /* ── DATE STRIP ─────────────────────────────── */
+    .date-strip {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .date-strip label { font-size: 12px; font-weight: 600; color: var(--gray); flex-shrink: 0; }
+    .date-strip input {
+      flex: 1; border: none; outline: none;
+      font-size: 15px; font-weight: 600; color: var(--gray-dark);
+      background: transparent;
+    }
+
+    /* ── SECTION HEADING ────────────────────────── */
+    .sec-head { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+
+    /* ── ROUTE CARD ─────────────────────────────── */
+    .route-card {
+      background: #fff; border-radius: var(--radius);
+      padding: 18px; margin-bottom: 12px;
+      box-shadow: var(--shadow-sm); cursor: pointer;
+      border-left: 5px solid var(--green);
+      transition: box-shadow .15s, transform .1s;
+    }
+    .route-card:active { transform: scale(.99); box-shadow: var(--shadow); }
+
+    .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .rc-badge { background: var(--green-pale); color: var(--green-dark); font-size: 13px; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
+    .rc-vehicle { font-size: 13px; color: var(--gray); }
+
+    .rc-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+    .rc-stat { font-size: 13px; }
+    .rc-stat .lbl { font-size: 11px; color: var(--gray); display: block; }
+
+    .rc-progress {}
+    .prog-bar { height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--green-light); border-radius: 3px; transition: width .4s; }
+    .prog-text { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+    /* ── EMPTY / LOADING ────────────────────────── */
+    .empty { text-align: center; padding: 60px 20px; color: var(--gray); }
+    .empty .ico { font-size: 44px; margin-bottom: 10px; }
+    .empty p { font-size: 14px; line-height: 1.5; }
+    .loading-msg { text-align: center; padding: 40px; color: var(--gray); font-size: 14px; }
+
+    /* ── ROUTE DETAIL ───────────────────────────── */
+    #routeDetailScreen { background: var(--green-bg); }
+
+    .detail-header { background: var(--green-dark); color: #fff; padding: 16px 18px 20px; }
+    .btn-back {
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      padding: 7px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 14px;
+    }
+    .detail-title { font-size: 22px; font-weight: 800; }
+    .detail-sub   { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 2px; margin-bottom: 16px; }
+
+    .detail-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .ds { background: rgba(255,255,255,.13); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; }
+    .ds-val { font-size: 20px; font-weight: 800; line-height: 1; }
+    .ds-lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 2px; }
+
+    /* ── STOPS ──────────────────────────────────── */
+    .stops-list { padding: 16px; max-width: 540px; margin: 0 auto; }
+
+    .stop-card {
+      background: #fff; border-radius: var(--radius);
+      margin-bottom: 10px; box-shadow: var(--shadow-sm); overflow: hidden;
+      border-left: 5px solid var(--gray-light);
+    }
+    .stop-card.done    { border-left-color: var(--green-light); }
+    .stop-card.partial { border-left-color: var(--orange); }
+    .stop-card.active  { border-left-color: var(--orange); box-shadow: 0 0 0 2px var(--orange), var(--shadow); }
+
+    .stop-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; cursor: pointer; user-select: none;
+    }
+
+    .stop-dot {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800;
+    }
+    .stop-dot.wh      { background: var(--green-dark); color: #fff; font-size: 18px; }
+    .stop-dot.done    { background: var(--green-light); color: #fff; }
+    .stop-dot.partial { background: var(--orange); color: #fff; }
+    .stop-dot.pending { background: var(--gray-light); color: var(--gray); }
+
+    .stop-text { flex: 1; min-width: 0; }
+    .stop-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stop-sub  { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .stop-chevron { font-size: 18px; color: var(--gray); transition: transform .2s; }
+    .stop-chevron.open { transform: rotate(90deg); }
+
+    /* ── STOP BODY (expanded) ───────────────────── */
+    .stop-body { display: none; padding: 0 16px 16px; }
+    .stop-body.open { display: block; }
+
+    .info-box {
+      border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 10px; font-size: 13px;
+    }
+    .info-box.green { background: var(--green-pale); color: var(--green-dark); }
+    .info-box.orange { background: var(--orange-pale); color: #7c4000; }
+    .info-box strong { font-weight: 700; }
+    .coords { font-family: 'Menlo', 'Courier New', monospace; font-size: 11px; color: var(--green-mid); margin-top: 4px; }
+
+    .action-btn {
+      width: 100%; padding: 13px 16px; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity .15s, transform .1s;
+    }
+    .action-btn:active { transform: scale(.98); }
+    .action-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-checkin { background: var(--green); color: #fff; }
+    .btn-photo   { background: var(--orange); color: #fff; }
+    .btn-done    { background: var(--green-pale); color: var(--green-dark); }
+
+    .photo-thumb {
+      width: 100%; max-height: 220px; object-fit: cover;
+      border-radius: var(--radius-sm); margin-bottom: 10px; display: none;
+    }
+
+    /* ── TOAST ──────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--green-dark); color: #fff;
+      padding: 11px 22px; border-radius: 30px;
+      font-size: 14px; font-weight: 600;
+      box-shadow: var(--shadow-lg); z-index: 999;
+      opacity: 0; transition: opacity .25s, transform .25s;
+      pointer-events: none; white-space: nowrap; max-width: 90vw; text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err  { background: var(--red); }
+
+    /* ── MAP LINK ───────────────────────────────── */
+    .map-link { font-size: 12px; color: var(--green); text-decoration: none; font-weight: 600; }
+
+    #photoInput { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="loginScreen" class="screen active">
+  <div class="login-icon">🌿</div>
+  <div class="login-brand">Urban Harvest</div>
+  <div class="login-tagline">Driver Portal</div>
+
+  <div class="login-card">
+    <h2>Sign in to your account</h2>
+    <div class="field">
+      <label>Your Phone Number</label>
+      <input type="tel" id="phoneInput" placeholder="e.g. 9876543210" maxlength="15" autocomplete="tel">
+    </div>
+    <div class="error-msg" id="loginError"></div>
+    <button class="btn-primary" id="loginBtn" onclick="login()">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══════════ ROUTES LIST ═══════════ -->
+<div id="routesScreen" class="screen">
+  <div class="top-nav">
+    <div class="nav-left">
+      <div class="nav-avatar" id="navAvatar">D</div>
+      <div>
+        <div class="nav-name" id="navName">Driver</div>
+        <div class="nav-phone" id="navPhone"></div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="page">
+    <div class="date-strip">
+      <label>Date</label>
+      <input type="date" id="datePicker" onchange="loadRoutes()">
+    </div>
+    <div class="sec-head">Assigned Routes</div>
+    <div id="routesList"><div class="loading-msg">Loading…</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ ROUTE DETAIL ═══════════ -->
+<div id="routeDetailScreen" class="screen">
+  <div class="detail-header">
+    <button class="btn-back" onclick="showScreen('routesScreen')">← Back</button>
+    <div class="detail-title" id="detailTitle">Route 1</div>
+    <div class="detail-sub"  id="detailSub"></div>
+    <div class="detail-stats" id="detailStats"></div>
+  </div>
+  <div class="stops-list" id="stopsList"></div>
+</div>
+
+<!-- Hidden photo input — capture="environment" opens rear camera on mobile -->
+<input type="file" id="photoInput" accept="image/*" capture="environment">
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const API = '';  // same origin
+
+/* ── state ── */
+let driver       = null;
+let currentRoute = null;
+let openStopIdx  = null;
+let pendingPhotoStop = null;
+
+/* ── utils ── */
+const $ = id => document.getElementById(id);
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+let toastTimer;
+function toast(msg, err = false) {
+  const el = $('toast');
+  clearTimeout(toastTimer);
+  el.textContent = msg;
+  el.className = 'toast show' + (err ? ' err' : '');
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function today() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function fmtTime(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  catch { return iso; }
+}
+
+/* resolve stop name from whatever shape stops_json uses */
+function stopName(s) {
+  return s.name || s.outlet || s.outletName || s.customer || `Stop`;
+}
+
+function isWarehouse(s, idx) {
+  return s.isWarehouse === true || s.type === 'warehouse' ||
+         (idx === 0 && (
+           /warehouse|hub|depot|farm|base/i.test(stopName(s)) || s.isWarehouse !== false
+         ));
+}
+
+/* ── LOGIN ── */
+async function login() {
+  const phone = $('phoneInput').value.trim();
+  if (!phone) return;
+
+  const btn = $('loginBtn');
+  const err = $('loginError');
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  err.style.display = 'none';
+
+  try {
+    const res  = await fetch(`${API}/api/driver/profile?phone=${encodeURIComponent(phone)}`);
+    const data = await res.json();
+
+    if (!res.ok || !data.found) {
+      err.textContent = '❌ No account found for this number. Contact your dispatcher.';
+      err.style.display = 'block';
+      return;
+    }
+
+    driver = data.driver;
+    $('navName').textContent  = driver.name  || 'Driver';
+    $('navPhone').textContent = driver.phone;
+    $('navAvatar').textContent = (driver.name || 'D')[0].toUpperCase();
+    $('datePicker').value = today();
+
+    showScreen('routesScreen');
+    loadRoutes();
+  } catch {
+    err.textContent = '⚠️ Connection error. Please check your network.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
+  }
+}
+
+function logout() {
+  driver = null;
+  currentRoute = null;
+  $('phoneInput').value = '';
+  showScreen('loginScreen');
+}
+
+$('phoneInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+/* ── ROUTES LIST ── */
+async function loadRoutes() {
+  const date = $('datePicker').value;
+  if (!date || !driver) return;
+
+  $('routesList').innerHTML = '<div class="loading-msg">Loading routes…</div>';
+  try {
+    const res  = await fetch(`${API}/api/driver/routes?phone=${encodeURIComponent(driver.phone)}&date=${date}`);
+    const data = await res.json();
+    renderList(data.routes || [], date);
+  } catch {
+    $('routesList').innerHTML = '<div class="empty"><div class="ico">⚠️</div><p>Could not load routes.<br>Check your connection.</p></div>';
+  }
+}
+
+function renderList(routes, date) {
+  if (!routes.length) {
+    $('routesList').innerHTML = `<div class="empty"><div class="ico">📭</div><p>No routes assigned for<br><strong>${fmtDate(date)}</strong></p></div>`;
+    return;
+  }
+  $('routesList').innerHTML = routes.map(r => {
+    const stops    = r.stops || [];
+    const custStops = stops.filter((s, i) => !isWarehouse(s, i));
+    const checked   = (r.checkins || []).length;
+    const pct       = custStops.length ? Math.round(checked / custStops.length * 100) : 0;
+    const allDone   = checked >= custStops.length && custStops.length > 0;
+
+    return `<div class="route-card" onclick='openRoute(${JSON.stringify(JSON.stringify(r))}, "${date}")'>
+      <div class="rc-top">
+        <span class="rc-badge">Route ${r.route_number}</span>
+        <span class="rc-vehicle">🚛 ${r.vehicle || '—'}</span>
+      </div>
+      <div class="rc-stats">
+        <div class="rc-stat"><span class="lbl">Stops</span>${custStops.length}</div>
+        <div class="rc-stat"><span class="lbl">Dispatch</span>${r.dispatch_time || '—'}</div>
+        <div class="rc-stat"><span class="lbl">Return by</span>${r.return_time || '—'}</div>
+        ${r.total_distance ? `<div class="rc-stat"><span class="lbl">Distance</span>${(+r.total_distance).toFixed(1)} km</div>` : ''}
+      </div>
+      <div class="rc-progress">
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <div class="prog-text">${allDone ? '✅ All stops completed' : `${checked} of ${custStops.length} stops checked in`}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openRoute(jsonStr, date) {
+  currentRoute         = JSON.parse(jsonStr);
+  currentRoute._date   = date;
+  openStopIdx          = null;
+  renderDetail();
+  showScreen('routeDetailScreen');
+}
+
+/* ── ROUTE DETAIL ── */
+function renderDetail() {
+  const r     = currentRoute;
+  const stops = r.stops || [];
+
+  $('detailTitle').textContent = `Route ${r.route_number}`;
+  $('detailSub').textContent   = `${fmtDate(r._date)}${r.vehicle ? ' · ' + r.vehicle : ''}${r.vehicle_number ? ' · ' + r.vehicle_number : ''}`;
+
+  const custStops = stops.filter((s, i) => !isWarehouse(s, i));
+  $('detailStats').innerHTML = [
+    custStops.length  ? `<div class="ds"><div class="ds-val">${custStops.length}</div><div class="ds-lbl">Stops</div></div>` : '',
+    r.total_distance  ? `<div class="ds"><div class="ds-val">${(+r.total_distance).toFixed(0)}</div><div class="ds-lbl">km</div></div>` : '',
+    r.dispatch_time   ? `<div class="ds"><div class="ds-val">${r.dispatch_time}</div><div class="ds-lbl">Dispatch</div></div>` : '',
+    r.return_time     ? `<div class="ds"><div class="ds-val">${r.return_time}</div><div class="ds-lbl">Return</div></div>` : '',
+  ].join('');
+
+  const checkins = r.checkins || [];
+  const photos   = r.photos   || [];
+
+  $('stopsList').innerHTML = stops.map((stop, idx) => {
+    const wh      = isWarehouse(stop, idx);
+    const checkin = checkins.find(c => c.stop_index === idx);
+    const photo   = photos.find(p => p.stop_index === idx);
+
+    const fullyDone = wh ? !!checkin : (!!checkin && !!photo);
+    const partial   = !wh && !!checkin && !photo;
+    const cardCls   = fullyDone ? 'done' : partial ? 'partial' : '';
+    const isOpen    = openStopIdx === idx;
+
+    const dotCls  = wh ? 'wh' : fullyDone ? 'done' : partial ? 'partial' : 'pending';
+    const dotTxt  = wh ? '🏭' : fullyDone ? '✓' : idx;
+    const chevron = isOpen ? ' open' : '';
+    const bodyOpen = isOpen ? ' open' : '';
+
+    const name = stopName(stop);
+    const lat  = stop.lat  || stop.latitude;
+    const lon  = stop.lon  || stop.lng || stop.longitude;
+    const weight = stop.weight || stop.totalWeight || stop.crates || '';
+    const eta    = stop.eta || '';
+
+    const subParts = [];
+    if (wh)     subParts.push('Starting point — Warehouse');
+    else {
+      if (weight) subParts.push(`${weight} kg`);
+      if (eta)    subParts.push(`ETA: ${eta}`);
+    }
+
+    const mapUrl = (lat && lon)
+      ? `https://maps.google.com/?q=${lat},${lon}`
+      : `https://maps.google.com/?q=${encodeURIComponent(name)}`;
+
+    return `
+<div class="stop-card ${cardCls}" id="sc${idx}">
+  <div class="stop-header" onclick="toggleStop(${idx})">
+    <div class="stop-dot ${dotCls}">${dotTxt}</div>
+    <div class="stop-text">
+      <div class="stop-name">${name}</div>
+      <div class="stop-sub">${subParts.join(' · ') || '&nbsp;'}</div>
+    </div>
+    <span class="stop-chevron${chevron}">›</span>
+  </div>
+
+  <div class="stop-body${bodyOpen}" id="sb${idx}">
+
+    <!-- navigation link -->
+    <div style="margin-bottom:10px;">
+      <a class="map-link" href="${mapUrl}" target="_blank" rel="noopener">🗺 Open in Maps</a>
+    </div>
+
+    <!-- checkin status -->
+    ${checkin ? `
+      <div class="info-box green">
+        <strong>📍 Arrived</strong> at ${fmtTime(checkin.checked_in_at)}
+        <div class="coords">${(+checkin.lat).toFixed(5)}, ${(+checkin.lon).toFixed(5)}
+          ${checkin.accuracy ? ` ±${Math.round(checkin.accuracy)}m` : ''}
+        </div>
+      </div>` : ''}
+
+    <!-- checkin button -->
+    <button class="action-btn btn-checkin" id="btnCI${idx}"
+      onclick="checkIn(${idx})" ${checkin ? 'disabled' : ''}>
+      ${checkin ? '✅ Checked In' : '📍 Mark Arrival & Capture Location'}
+    </button>
+
+    <!-- photo section (not for warehouse) -->
+    ${!wh ? `
+      ${photo
+        ? `<img src="${photo.photo_data}" class="photo-thumb" id="pt${idx}" style="display:block">`
+        : `<img class="photo-thumb" id="pt${idx}">`}
+      <button class="action-btn btn-photo" id="btnPH${idx}"
+        onclick="triggerPhoto(${idx})" ${photo ? 'disabled' : ''}>
+        ${photo ? '✅ Temperature Photo Saved' : '📷 Upload Temperature Photo'}
+      </button>` : ''}
+
+  </div>
+</div>`;
+  }).join('');
+}
+
+function toggleStop(idx) {
+  openStopIdx = openStopIdx === idx ? null : idx;
+  // re-render detail to update chevrons + open state
+  renderDetail();
+  // scroll to card
+  setTimeout(() => {
+    const el = $(`sc${idx}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
+}
+
+/* ── CHECK-IN ── */
+function checkIn(stopIdx) {
+  const btn = $(`btnCI${stopIdx}`);
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = '📡 Getting GPS…';
+
+  if (!navigator.geolocation) {
+    toast('GPS not supported on this device', true);
+    btn.disabled = false;
+    btn.textContent = '📍 Mark Arrival & Capture Location';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+      const { latitude: lat, longitude: lon, accuracy } = pos.coords;
+      try {
+        const stop = currentRoute.stops[stopIdx];
+        const body = {
+          driver_phone: driver.phone,
+          driver_name:  driver.name,
+          route_date:   currentRoute._date,
+          route_number: currentRoute.route_number,
+          stop_index:   stopIdx,
+          stop_name:    stopName(stop),
+          lat, lon, accuracy,
+          type: isWarehouse(stop, stopIdx) ? 'warehouse' : 'stop'
+        };
+        const res = await fetch(`${API}/api/driver/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error();
+
+        if (!currentRoute.checkins) currentRoute.checkins = [];
+        currentRoute.checkins = currentRoute.checkins.filter(c => c.stop_index !== stopIdx);
+        currentRoute.checkins.push({ stop_index: stopIdx, lat, lon, accuracy, checked_in_at: new Date().toISOString() });
+
+        toast(`📍 Location saved! ±${Math.round(accuracy)}m`);
+        renderDetail();
+        openStopIdx = stopIdx;
+        // re-open the expanded card
+        setTimeout(() => {
+          const sb = $(`sb${stopIdx}`);
+          if (sb) sb.classList.add('open');
+        }, 0);
+      } catch {
+        toast('Failed to save check-in', true);
+        btn.disabled = false;
+        btn.textContent = '📍 Mark Arrival & Capture Location';
+      }
+    },
+    err => {
+      const msgs = {
+        1: 'Location permission denied. Enable GPS in browser settings.',
+        2: 'Location unavailable. Try moving outdoors.',
+        3: 'GPS timed out. Try again.'
+      };
+      toast(msgs[err.code] || 'GPS error', true);
+      btn.disabled = false;
+      btn.textContent = '📍 Mark Arrival & Capture Location';
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+  );
+}
+
+/* ── PHOTO ── */
+function triggerPhoto(stopIdx) {
+  pendingPhotoStop = stopIdx;
+  $('photoInput').click();
+}
+
+$('photoInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file || pendingPhotoStop === null) return;
+  const idx = pendingPhotoStop;
+  pendingPhotoStop = null;
+
+  const btn = $(`btnPH${idx}`);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Uploading…'; }
+
+  try {
+    const compressed = await compressImage(file, 1024, 0.80);
+    const stop = currentRoute.stops[idx];
+
+    const res = await fetch(`${API}/api/driver/photo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        driver_phone: driver.phone,
+        driver_name:  driver.name,
+        route_date:   currentRoute._date,
+        route_number: currentRoute.route_number,
+        stop_index:   idx,
+        stop_name:    stopName(stop),
+        photo_data:   compressed
+      })
+    });
+    if (!res.ok) throw new Error();
+
+    if (!currentRoute.photos) currentRoute.photos = [];
+    currentRoute.photos = currentRoute.photos.filter(p => p.stop_index !== idx);
+    currentRoute.photos.push({ stop_index: idx, photo_data: compressed });
+
+    toast('📷 Temperature photo saved!');
+    renderDetail();
+    openStopIdx = idx;
+    setTimeout(() => {
+      const sb = $(`sb${idx}`);
+      if (sb) sb.classList.add('open');
+    }, 0);
+  } catch {
+    toast('Photo upload failed', true);
+    if (btn) { btn.disabled = false; btn.textContent = '📷 Upload Temperature Photo'; }
+  }
+  e.target.value = '';
+});
+
+function compressImage(file, maxW, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ev => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width: w, height: h } = img;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ── INIT ── */
+$('datePicker').value = today();
+</script>
+</body>
+</html>
