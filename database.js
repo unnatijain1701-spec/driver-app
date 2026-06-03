@@ -8,7 +8,6 @@ const pool = new Pool({
 async function initDriverTables() {
   const client = await pool.connect();
   try {
-    // GPS check-ins: one row per driver per stop per route per date
     await client.query(`
       CREATE TABLE IF NOT EXISTS driver_checkins (
         id SERIAL PRIMARY KEY,
@@ -27,7 +26,6 @@ async function initDriverTables() {
       )
     `);
 
-    // Temperature photos: base64-encoded JPEG, one per stop
     await client.query(`
       CREATE TABLE IF NOT EXISTS driver_photos (
         id SERIAL PRIMARY KEY,
@@ -39,6 +37,49 @@ async function initDriverTables() {
         stop_name    TEXT,
         photo_data   TEXT NOT NULL,
         uploaded_at  TEXT NOT NULL,
+        UNIQUE(driver_phone, route_date, route_number, stop_index)
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS driver_trips (
+        id SERIAL PRIMARY KEY,
+        driver_phone TEXT NOT NULL,
+        driver_name  TEXT,
+        route_date   TEXT NOT NULL,
+        route_number INTEGER NOT NULL,
+        started_at   TEXT,
+        ended_at     TEXT,
+        status       TEXT DEFAULT 'not_started',
+        UNIQUE(driver_phone, route_date, route_number)
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS driver_stop_notes (
+        id SERIAL PRIMARY KEY,
+        driver_phone TEXT NOT NULL,
+        driver_name  TEXT,
+        route_date   TEXT NOT NULL,
+        route_number INTEGER NOT NULL,
+        stop_index   INTEGER NOT NULL,
+        stop_name    TEXT,
+        note         TEXT NOT NULL,
+        created_at   TEXT NOT NULL
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS driver_skipped_stops (
+        id SERIAL PRIMARY KEY,
+        driver_phone TEXT NOT NULL,
+        driver_name  TEXT,
+        route_date   TEXT NOT NULL,
+        route_number INTEGER NOT NULL,
+        stop_index   INTEGER NOT NULL,
+        stop_name    TEXT,
+        reason       TEXT,
+        skipped_at   TEXT NOT NULL,
         UNIQUE(driver_phone, route_date, route_number, stop_index)
       )
     `);

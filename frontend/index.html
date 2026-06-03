@@ -7,7 +7,6 @@
   <title>Urban Harvest · Driver</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --green-dark:  #1b4332;
       --green:       #2d6a4f;
@@ -18,6 +17,9 @@
       --orange:      #e07a1f;
       --orange-pale: #fef3e2;
       --red:         #c0392b;
+      --red-pale:    #fdecea;
+      --blue:        #1a73e8;
+      --blue-pale:   #e8f0fe;
       --gray-dark:   #1f2937;
       --gray:        #6b7280;
       --gray-light:  #e5e7eb;
@@ -28,7 +30,6 @@
       --radius:      16px;
       --radius-sm:   10px;
     }
-
     html, body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--green-bg);
@@ -39,49 +40,28 @@
     }
 
     /* ── SCREENS ── */
-    .screen { display: none; min-height: 100dvh; position: relative; }
+    .screen { display: none; min-height: 100dvh; }
     .screen.active { display: block; }
-    #loginScreen { position: fixed; inset: 0; z-index: 10; overflow-y: auto; }
+    #loginScreen { position: fixed; inset: 0; z-index: 10; overflow-y: auto; background: linear-gradient(160deg, #0d2b1e 0%, var(--green-dark) 45%, var(--green-mid) 100%); }
     #loginScreen:not(.active) { display: none; }
 
-    /* ── SCREEN TRANSITION ── */
-    .screen.slide-in {
-      animation: slideIn .3s ease forwards;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ══════════════════════════════
-       LOGIN
-    ══════════════════════════════ */
+    /* ── LOGIN ── */
     #loginScreen {
-      min-height: 100dvh;
-      background: linear-gradient(160deg, #0d2b1e 0%, var(--green-dark) 45%, var(--green-mid) 100%);
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 28px 20px;
+      align-items: center; justify-content: center; padding: 28px 20px;
     }
     #loginScreen.active { display: flex; }
-
-    .login-icon  { font-size: 60px; margin-bottom: 10px; }
-    .login-brand { color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -0.5px; }
+    .login-icon   { font-size: 60px; margin-bottom: 10px; }
+    .login-brand  { color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -.5px; }
     .login-tagline { color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 40px; }
-
     .login-card {
       background: var(--white); border-radius: 24px;
-      padding: 30px 24px 26px;
-      width: 100%; max-width: 400px;
+      padding: 30px 24px 26px; width: 100%; max-width: 400px;
       box-shadow: var(--shadow-lg);
     }
     .login-card h2 { font-size: 20px; font-weight: 800; color: var(--green-dark); margin-bottom: 22px; }
-
     .field { margin-bottom: 16px; }
-    .field label {
-      display: block; font-size: 11px; font-weight: 700; color: var(--gray);
-      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px;
-    }
+    .field label { display: block; font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px; }
     .field input {
       width: 100%; padding: 16px 18px;
       border: 2px solid var(--gray-light); border-radius: var(--radius);
@@ -89,47 +69,26 @@
       outline: none; transition: border-color .2s; background: #fafafa;
     }
     .field input:focus { border-color: var(--green); background: #fff; }
-
     .error-msg {
       display: none; color: var(--red); font-size: 13px;
       margin: 8px 0 4px; padding: 12px 14px;
-      background: #ffeaea; border-radius: var(--radius-sm);
-      line-height: 1.5;
+      background: var(--red-pale); border-radius: var(--radius-sm); line-height: 1.5;
     }
-
     .btn-primary {
       width: 100%; padding: 17px; margin-top: 12px;
-      background: var(--green); color: #fff;
-      border: none; border-radius: var(--radius);
-      font-size: 17px; font-weight: 700; cursor: pointer;
-      transition: background .15s, transform .1s;
-      min-height: 56px;
+      background: var(--green); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 17px; font-weight: 700;
+      cursor: pointer; transition: background .15s, transform .1s; min-height: 56px;
     }
     .btn-primary:active  { transform: scale(.98); }
     .btn-primary:hover   { background: var(--green-dark); }
     .btn-primary:disabled { background: var(--gray-light); color: var(--gray); cursor: not-allowed; transform: none; }
 
-    /* ── SUCCESS FLASH after login ── */
-    #loginSuccess {
-      display: none; text-align: center; padding: 16px 0 0;
-    }
-    #loginSuccess.show { display: block; }
-    .success-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--green-pale); color: var(--green-dark);
-      padding: 10px 20px; border-radius: 30px;
-      font-size: 14px; font-weight: 700;
-    }
-
-    /* ══════════════════════════════
-       TOP NAV
-    ══════════════════════════════ */
+    /* ── TOP NAV ── */
     .top-nav {
       background: var(--green-dark); color: #fff;
-      padding: 16px 18px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 200;
-      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+      padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 10px rgba(0,0,0,.25);
     }
     .nav-left { display: flex; align-items: center; gap: 12px; }
     .nav-avatar {
@@ -143,208 +102,234 @@
     .btn-logout {
       background: rgba(255,255,255,.15); border: none; color: #fff;
       padding: 10px 16px; border-radius: var(--radius-sm);
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      min-height: 44px;
+      font-size: 14px; font-weight: 600; cursor: pointer; min-height: 44px;
     }
 
-    /* ══════════════════════════════
-       ROUTES LIST
-    ══════════════════════════════ */
+    /* ── PAGE ── */
     .page { padding: 16px; max-width: 560px; margin: 0 auto; }
-
     .date-strip {
       display: flex; align-items: center; gap: 12px;
-      background: #fff; border-radius: var(--radius);
-      padding: 14px 18px; margin-bottom: 16px;
-      box-shadow: var(--shadow-sm);
+      background: #fff; border-radius: var(--radius); padding: 14px 18px;
+      margin-bottom: 16px; box-shadow: var(--shadow-sm);
     }
     .date-strip label { font-size: 12px; font-weight: 700; color: var(--gray); flex-shrink: 0; text-transform: uppercase; letter-spacing: .4px; }
-    .date-strip input {
-      flex: 1; border: none; outline: none;
-      font-size: 16px; font-weight: 600; color: var(--gray-dark);
-      background: transparent; min-height: 28px;
-    }
+    .date-strip input { flex: 1; border: none; outline: none; font-size: 16px; font-weight: 600; color: var(--gray-dark); background: transparent; min-height: 28px; }
+    .sec-head { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; }
 
-    .sec-head {
-      font-size: 11px; font-weight: 700; color: var(--gray);
-      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px;
-    }
-
+    /* ── ROUTE CARD ── */
     .route-card {
-      background: #fff; border-radius: var(--radius);
-      padding: 20px; margin-bottom: 14px;
-      box-shadow: var(--shadow-sm); cursor: pointer;
-      border-left: 5px solid var(--green);
-      transition: box-shadow .15s, transform .1s;
+      background: #fff; border-radius: var(--radius); padding: 20px;
+      margin-bottom: 14px; box-shadow: var(--shadow-sm); cursor: pointer;
+      border-left: 5px solid var(--green); transition: box-shadow .15s, transform .1s;
     }
     .route-card:active { transform: scale(.99); box-shadow: var(--shadow); }
-
     .rc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .rc-badge { background: var(--green-pale); color: var(--green-dark); font-size: 14px; font-weight: 800; padding: 5px 14px; border-radius: 20px; }
     .rc-vehicle { font-size: 13px; color: var(--gray); }
-
     .rc-stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
     .rc-stat { font-size: 14px; font-weight: 600; }
     .rc-stat .lbl { font-size: 11px; color: var(--gray); font-weight: 400; display: block; margin-bottom: 2px; }
-
     .prog-bar { height: 7px; background: var(--gray-light); border-radius: 4px; overflow: hidden; }
     .prog-fill { height: 100%; background: var(--green-light); border-radius: 4px; transition: width .4s; }
     .prog-text { font-size: 12px; color: var(--gray); margin-top: 5px; }
+    .rc-trip-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; margin-top: 10px; padding: 5px 10px; border-radius: 20px; }
+    .rc-trip-status.not-started { background: var(--gray-light); color: var(--gray); }
+    .rc-trip-status.in-progress { background: #fff3cd; color: #856404; }
+    .rc-trip-status.completed   { background: var(--green-pale); color: var(--green-dark); }
 
     .empty { text-align: center; padding: 70px 20px; color: var(--gray); }
     .empty .ico { font-size: 48px; margin-bottom: 12px; }
     .empty p { font-size: 15px; line-height: 1.6; }
     .loading-msg { text-align: center; padding: 50px; color: var(--gray); font-size: 15px; }
 
-    /* ══════════════════════════════
-       ROUTE DETAIL
-    ══════════════════════════════ */
+    /* ── ROUTE DETAIL ── */
     #routeDetailScreen { background: var(--green-bg); }
-
     .detail-header { background: var(--green-dark); color: #fff; padding: 16px 18px 22px; }
     .btn-back {
       background: rgba(255,255,255,.15); border: none; color: #fff;
       padding: 10px 16px; border-radius: var(--radius-sm);
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      margin-bottom: 16px; min-height: 44px;
+      font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 16px; min-height: 44px;
     }
     .detail-title { font-size: 24px; font-weight: 800; }
     .detail-sub   { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 3px; margin-bottom: 18px; }
-
     .detail-stats { display: flex; gap: 10px; flex-wrap: wrap; }
     .ds { background: rgba(255,255,255,.13); border-radius: var(--radius-sm); padding: 10px 18px; text-align: center; }
     .ds-val { font-size: 20px; font-weight: 800; line-height: 1; }
     .ds-lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 3px; }
 
-    /* ══════════════════════════════
-       STOPS
-    ══════════════════════════════ */
-    .stops-list { padding: 16px; max-width: 560px; margin: 0 auto; }
+    /* ── TRIP BANNER ── */
+    .trip-banner {
+      margin: 16px 16px 0; border-radius: var(--radius); padding: 16px 18px;
+      max-width: 560px; margin-left: auto; margin-right: auto;
+    }
+    .trip-banner.not-started { background: #fff; border: 2px dashed var(--green-light); }
+    .trip-banner.in-progress { background: #fff3cd; border: 2px solid #ffc107; }
+    .trip-banner.completed   { background: var(--green-pale); border: 2px solid var(--green-light); }
+    .trip-banner-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .trip-banner-sub   { font-size: 13px; color: var(--gray); margin-bottom: 12px; }
+    .btn-trip {
+      width: 100%; padding: 14px; border: none; border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 700; cursor: pointer; min-height: 50px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-trip.start { background: var(--green); color: #fff; }
+    .btn-trip.end   { background: var(--orange); color: #fff; }
 
+    /* ── STOPS ── */
+    .stops-list { padding: 12px 16px 16px; max-width: 560px; margin: 0 auto; }
     .stop-card {
-      background: #fff; border-radius: var(--radius);
-      margin-bottom: 12px; box-shadow: var(--shadow-sm); overflow: hidden;
-      border-left: 5px solid var(--gray-light);
+      background: #fff; border-radius: var(--radius); margin-bottom: 10px;
+      box-shadow: var(--shadow-sm); overflow: hidden; border-left: 5px solid var(--gray-light);
     }
     .stop-card.done    { border-left-color: var(--green-light); }
     .stop-card.partial { border-left-color: var(--orange); }
+    .stop-card.skipped { border-left-color: var(--red); opacity: .85; }
     .stop-card.wh-card { border-left-color: var(--green-dark); }
-
     .stop-header {
       display: flex; align-items: center; gap: 14px;
-      padding: 16px 18px; cursor: pointer; user-select: none;
-      min-height: 72px;
+      padding: 14px 16px; cursor: pointer; user-select: none; min-height: 68px;
     }
-
     .stop-dot {
-      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       font-size: 15px; font-weight: 800;
     }
     .stop-dot.wh      { background: var(--green-dark); color: #fff; font-size: 20px; }
     .stop-dot.done    { background: var(--green-light); color: #fff; font-size: 18px; }
     .stop-dot.partial { background: var(--orange); color: #fff; }
+    .stop-dot.skipped { background: var(--red); color: #fff; font-size: 18px; }
     .stop-dot.pending { background: var(--gray-light); color: var(--gray); }
-
     .stop-text { flex: 1; min-width: 0; }
-
-    /* collapsed: truncate */
-    .stop-name {
-      font-size: 15px; font-weight: 700;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-    /* expanded: show full name */
-    .stop-name.full {
-      white-space: normal; overflow: visible; text-overflow: unset;
-    }
+    .stop-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+    .stop-name.full { white-space: normal; overflow: visible; text-overflow: unset; }
     .stop-sub  { font-size: 12px; color: var(--gray); margin-top: 3px; line-height: 1.4; }
     .stop-chevron { font-size: 20px; color: var(--gray); transition: transform .25s; flex-shrink: 0; }
     .stop-chevron.open { transform: rotate(90deg); }
 
     /* ── STOP BODY ── */
-    .stop-body { display: none; padding: 0 18px 18px; }
+    .stop-body { display: none; padding: 0 16px 16px; }
     .stop-body.open { display: block; }
-
     .info-box {
-      border-radius: var(--radius-sm); padding: 12px 14px;
-      margin-bottom: 12px; font-size: 14px; line-height: 1.5;
+      border-radius: var(--radius-sm); padding: 11px 14px;
+      margin-bottom: 10px; font-size: 14px; line-height: 1.5;
     }
     .info-box.green  { background: var(--green-pale); color: var(--green-dark); }
-    .info-box.blue   { background: #e0f0ff; color: #1a4a7a; }
+    .info-box.red    { background: var(--red-pale); color: var(--red); }
     .info-box strong { font-weight: 700; }
-    .coords {
-      font-family: 'Menlo', 'Courier New', monospace;
-      font-size: 11px; color: var(--green-mid); margin-top: 4px;
-    }
+    .coords { font-family: 'Menlo','Courier New',monospace; font-size: 11px; color: var(--green-mid); margin-top: 4px; }
+    .map-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--green); text-decoration: none; font-weight: 700; padding: 6px 0; margin-bottom: 10px; }
 
     .action-btn {
-      width: 100%; padding: 15px 16px; border: none; border-radius: var(--radius-sm);
-      font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+      width: 100%; padding: 14px 16px; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px;
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: opacity .15s, transform .1s;
-      min-height: 52px;
+      transition: opacity .15s, transform .1s; min-height: 50px;
     }
     .action-btn:active   { transform: scale(.98); }
     .action-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     .btn-checkin { background: var(--green); color: #fff; }
     .btn-photo   { background: var(--orange); color: #fff; }
+    .btn-note    { background: var(--blue-pale); color: var(--blue); }
+    .btn-skip    { background: var(--red-pale); color: var(--red); }
+    .btn-unskip  { background: var(--gray-light); color: var(--gray); }
+
+    .ts-note { font-size: 11px; color: var(--gray); margin: -4px 0 10px; padding: 0 2px; }
 
     .photo-thumb {
-      width: 100%; max-height: 240px; object-fit: cover;
-      border-radius: var(--radius-sm); margin-bottom: 12px; display: none;
+      width: 100%; max-height: 200px; object-fit: cover;
+      border-radius: var(--radius-sm); margin-bottom: 10px;
     }
 
-    .map-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; color: var(--green); text-decoration: none;
-      font-weight: 700; padding: 8px 0; margin-bottom: 10px;
+    /* ── NOTE INPUT ── */
+    .note-area { display: none; margin-bottom: 10px; }
+    .note-area.open { display: block; }
+    .note-area textarea {
+      width: 100%; padding: 12px 14px;
+      border: 2px solid var(--gray-light); border-radius: var(--radius-sm);
+      font-size: 14px; resize: none; outline: none; min-height: 80px;
+      transition: border-color .2s; font-family: inherit;
     }
+    .note-area textarea:focus { border-color: var(--blue); }
+    .note-save {
+      margin-top: 6px; padding: 10px 20px; background: var(--blue);
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .saved-note {
+      background: var(--blue-pale); color: #1a3a6b;
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 13px; margin-bottom: 8px; line-height: 1.5;
+    }
+    .saved-note .note-label { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
 
-    /* ── TIMESTAMP NOTE ── */
-    .ts-note {
-      font-size: 11px; color: var(--gray); margin-top: -6px; margin-bottom: 10px;
-      padding: 0 2px;
+    /* ── SKIP REASONS ── */
+    .skip-reasons { display: none; margin-bottom: 10px; }
+    .skip-reasons.open { display: block; }
+    .skip-reasons p { font-size: 13px; color: var(--gray); margin-bottom: 8px; font-weight: 600; }
+    .reason-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .reason-btn {
+      padding: 8px 14px; border: 2px solid var(--red); background: #fff;
+      color: var(--red); border-radius: 20px; font-size: 13px;
+      font-weight: 600; cursor: pointer;
     }
+    .reason-btn:active { background: var(--red); color: #fff; }
+
+    /* ── TRIP SUMMARY ── */
+    .trip-summary {
+      background: #fff; border-radius: var(--radius); padding: 20px;
+      margin: 0 16px 16px; box-shadow: var(--shadow);
+      border-top: 4px solid var(--green-light); max-width: 560px;
+      margin-left: auto; margin-right: auto;
+    }
+    .trip-summary h3 { font-size: 16px; font-weight: 800; color: var(--green-dark); margin-bottom: 14px; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .summary-item .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: .4px; }
+    .summary-item .val { font-size: 18px; font-weight: 800; margin-top: 2px; }
+    .summary-item .val.green { color: var(--green); }
+    .summary-item .val.red   { color: var(--red); }
+    .summary-item .val.orange { color: var(--orange); }
+
+    /* ── OFFLINE INDICATOR ── */
+    .offline-bar {
+      display: none; background: #856404; color: #fff;
+      text-align: center; padding: 8px; font-size: 13px; font-weight: 600;
+    }
+    .offline-bar.show { display: block; }
 
     /* ── TOAST ── */
     .toast {
       position: fixed; bottom: 30px; left: 50%;
       transform: translateX(-50%) translateY(20px);
       background: var(--green-dark); color: #fff;
-      padding: 12px 24px; border-radius: 30px;
-      font-size: 14px; font-weight: 600;
+      padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600;
       box-shadow: var(--shadow-lg); z-index: 999;
       opacity: 0; transition: opacity .25s, transform .25s;
-      pointer-events: none; white-space: nowrap;
-      max-width: 90vw; text-align: center;
+      pointer-events: none; white-space: nowrap; max-width: 90vw; text-align: center;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.err  { background: var(--red); }
+    .toast.warn { background: #856404; }
 
     #photoInput { display: none; }
   </style>
 </head>
 <body>
 
+<div class="offline-bar" id="offlineBar">⚠️ No internet — check-ins saved locally and will sync when back online</div>
+
 <!-- ═══════════ LOGIN ═══════════ -->
 <div id="loginScreen" class="screen active">
   <div class="login-icon">🌿</div>
   <div class="login-brand">Urban Harvest</div>
   <div class="login-tagline">Driver Portal</div>
-
   <div class="login-card">
     <h2>Sign in to your account</h2>
     <div class="field">
       <label>Your Phone Number</label>
-      <input type="tel" id="phoneInput" placeholder="e.g. 9876543210"
-             maxlength="15" autocomplete="tel" inputmode="numeric">
+      <input type="tel" id="phoneInput" placeholder="e.g. 9876543210" maxlength="15" autocomplete="tel" inputmode="numeric">
     </div>
     <div class="error-msg" id="loginError"></div>
     <button class="btn-primary" id="loginBtn" onclick="login()">Continue →</button>
-    <div id="loginSuccess">
-      <div class="success-badge">✅ <span id="successName"></span>, you're logged in!</div>
-    </div>
   </div>
 </div>
 
@@ -360,7 +345,6 @@
     </div>
     <button class="btn-logout" onclick="logout()">Logout</button>
   </div>
-
   <div class="page">
     <div class="date-strip">
       <label>Date</label>
@@ -379,12 +363,12 @@
     <div class="detail-sub"   id="detailSub"></div>
     <div class="detail-stats" id="detailStats"></div>
   </div>
+  <div id="tripBanner"></div>
   <div class="stops-list" id="stopsList"></div>
+  <div id="tripSummary"></div>
 </div>
 
-<!-- Photo input: capture="environment" opens rear camera on mobile -->
 <input type="file" id="photoInput" accept="image/*" capture="environment">
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -398,131 +382,129 @@ let pendingPhotoStop = null;
 
 const $ = id => document.getElementById(id);
 
-/* ── screen transitions ── */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active', 'slide-in');
-  });
-  const el = $(id);
-  el.classList.add('active');
-  // trigger animation
-  requestAnimationFrame(() => el.classList.add('slide-in'));
-  window.scrollTo(0, 0);
+/* ── offline queue ── */
+const Q_KEY = 'uh_driver_queue';
+function getQueue()  { try { return JSON.parse(localStorage.getItem(Q_KEY) || '[]'); } catch { return []; } }
+function saveQueue(q){ try { localStorage.setItem(Q_KEY, JSON.stringify(q)); } catch {} }
+
+async function postWithQueue(url, data) {
+  try {
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+    if (!res.ok) throw new Error('Server error');
+    return { ok:true, offline:false };
+  } catch {
+    const q = getQueue();
+    q.push({ url, data, queuedAt: new Date().toISOString() });
+    saveQueue(q);
+    return { ok:true, offline:true };
+  }
 }
 
-/* ── toast ── */
+async function flushQueue() {
+  const q = getQueue();
+  if (!q.length) return;
+  const failed = [];
+  let synced = 0;
+  for (const item of q) {
+    try {
+      const res = await fetch(item.url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item.data) });
+      if (res.ok) synced++;
+      else failed.push(item);
+    } catch { failed.push(item); }
+  }
+  saveQueue(failed);
+  if (synced > 0) toast(`✅ ${synced} offline record${synced>1?'s':''} synced`);
+}
+
+window.addEventListener('online',  () => { $('offlineBar').classList.remove('show'); flushQueue(); });
+window.addEventListener('offline', () => { $('offlineBar').classList.add('show'); });
+if (!navigator.onLine) $('offlineBar').classList.add('show');
+
+/* ── utils ── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0, 0);
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
 let toastTimer;
-function toast(msg, err = false) {
+function toast(msg, type = '') {
   const el = $('toast');
   clearTimeout(toastTimer);
   el.textContent = msg;
-  el.className = 'toast show' + (err ? ' err' : '');
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-/* ── date helpers ── */
 function today() { return new Date().toISOString().slice(0, 10); }
+function fmtDate(iso) { if (!iso) return ''; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 
-function fmtDate(iso) {
-  if (!iso) return '';
-  const [y, m, d] = iso.split('-');
-  return `${d}/${m}/${y}`;
-}
-
-/* arrival timestamp → "9:00 AM" */
 function fmtTime(iso) {
   if (!iso) return '';
-  try { return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }); }
+  try { return new Date(iso).toLocaleTimeString([], { hour:'numeric', minute:'2-digit', hour12:true }); }
   catch { return iso; }
 }
-
-/* ETA string "9:00:00 AM" → "9:00 AM" */
 function fmtETA(t) {
   if (!t) return '';
-  // "12:00:00 PM" → "12:00 PM", "9:00:00 AM" → "9:00 AM"
   const m = t.match(/(\d{1,2}:\d{2})(?::\d+)?\s*(AM|PM)/i);
   if (m) return `${m[1]} ${m[2].toUpperCase()}`;
   return t;
 }
-
-/* ── stop helpers ── */
-function stopName(s) {
-  return s.name || s.outlet || s.outletName || s.customer || 'Stop';
+function fmtDuration(startIso, endIso) {
+  if (!startIso || !endIso) return '—';
+  const mins = Math.round((new Date(endIso) - new Date(startIso)) / 60000);
+  if (mins < 60) return `${mins}m`;
+  return `${Math.floor(mins/60)}h ${mins%60}m`;
 }
 
-/* Stop 0 is always the warehouse/starting point */
-function isWarehouse(s, idx) {
-  return idx === 0;
-}
+function stopName(s) { return s.name || s.outlet || s.outletName || s.customer || 'Stop'; }
+function isWarehouse(s, idx) { return idx === 0; }
 
-/* ══════════════════════════════
-   LOGIN
-══════════════════════════════ */
+/* ── LOGIN ── */
 async function login() {
   const phone = $('phoneInput').value.trim();
   if (!phone) return;
-
-  const btn = $('loginBtn');
-  const err = $('loginError');
-  btn.disabled = true;
-  btn.textContent = 'Checking…';
+  const btn = $('loginBtn'), err = $('loginError');
+  btn.disabled = true; btn.textContent = 'Checking…';
   err.style.display = 'none';
-  $('loginSuccess').classList.remove('show');
-
   try {
     const res  = await fetch(`${API}/api/driver/profile?phone=${encodeURIComponent(phone)}`);
     const data = await res.json();
-
     if (!res.ok || !data.found) {
       err.textContent = '❌ No account found for this number. Contact your dispatcher.';
       err.style.display = 'block';
       return;
     }
-
     driver = data.driver;
-
-    btn.textContent = '✅ Signed in!';
-
-    /* update nav */
     $('navName').textContent   = driver.name  || 'Driver';
     $('navPhone').textContent  = driver.phone;
     $('navAvatar').textContent = (driver.name || 'D')[0].toUpperCase();
     $('datePicker').value = today();
-
-    /* brief pause so user sees confirmation, then switch screen */
+    btn.textContent = '✅ Signed in!';
     setTimeout(() => {
       showScreen('routesScreen');
       loadRoutes();
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }, 900);
-
+      flushQueue();
+    }, 700);
   } catch {
     err.textContent = '⚠️ Connection error. Please check your network.';
     err.style.display = 'block';
   } finally {
-    /* re-enable after delay (so user sees the ✅ state) */
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.textContent = 'Continue →';
-    }, 1000);
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Continue →'; }, 800);
   }
 }
 
 function logout() {
   driver = null; currentRoute = null;
   $('phoneInput').value = '';
-  $('loginSuccess').classList.remove('show');
   $('loginError').style.display = 'none';
   showScreen('loginScreen');
 }
-
 $('phoneInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 
-/* ══════════════════════════════
-   ROUTES LIST
-══════════════════════════════ */
+/* ── ROUTES LIST ── */
 async function loadRoutes() {
   const date = $('datePicker').value;
   if (!date || !driver) return;
@@ -542,11 +524,17 @@ function renderList(routes, date) {
     return;
   }
   $('routesList').innerHTML = routes.map(r => {
-    const stops      = r.stops || [];
-    const custStops  = stops.filter((s, i) => !isWarehouse(s, i));
-    const checked    = (r.checkins || []).length;
-    const pct        = custStops.length ? Math.round(checked / custStops.length * 100) : 0;
-    const allDone    = checked >= custStops.length && custStops.length > 0;
+    const stops     = r.stops || [];
+    const custStops = stops.filter((s,i) => !isWarehouse(s,i));
+    const checkins  = r.checkins || [];
+    const skips     = r.skips   || [];
+    const done      = checkins.length;
+    const skipped   = skips.length;
+    const pct       = custStops.length ? Math.round(done / custStops.length * 100) : 0;
+    const trip      = r.trip;
+    const tripLabel = !trip ? ['not-started','⚪ Not Started']
+                    : trip.status==='completed' ? ['completed','✅ Trip Complete']
+                    : ['in-progress','🟡 Trip In Progress'];
 
     return `<div class="route-card" onclick='openRoute(${JSON.stringify(JSON.stringify(r))}, "${date}")'>
       <div class="rc-top">
@@ -555,14 +543,13 @@ function renderList(routes, date) {
       </div>
       <div class="rc-stats">
         <div class="rc-stat"><span class="lbl">Stops</span>${custStops.length}</div>
-        <div class="rc-stat"><span class="lbl">Dispatch</span>${fmtETA(r.dispatch_time) || '—'}</div>
-        <div class="rc-stat"><span class="lbl">Return by</span>${fmtETA(r.return_time) || '—'}</div>
-        ${r.total_distance ? `<div class="rc-stat"><span class="lbl">Distance</span>${(+r.total_distance).toFixed(1)} km</div>` : ''}
+        <div class="rc-stat"><span class="lbl">Dispatch</span>${fmtETA(r.dispatch_time)||'—'}</div>
+        <div class="rc-stat"><span class="lbl">Return by</span>${fmtETA(r.return_time)||'—'}</div>
+        ${r.total_distance?`<div class="rc-stat"><span class="lbl">Distance</span>${(+r.total_distance).toFixed(1)} km</div>`:''}
       </div>
-      <div class="rc-progress">
-        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
-        <div class="prog-text">${allDone ? '✅ All stops completed' : `${checked} of ${custStops.length} stops checked in`}</div>
-      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <div class="prog-text">${done} of ${custStops.length} checked in · ${skipped} skipped</div>
+      <div class="rc-trip-status ${tripLabel[0]}">${tripLabel[1]}</div>
     </div>`;
   }).join('');
 }
@@ -575,98 +562,190 @@ function openRoute(jsonStr, date) {
   showScreen('routeDetailScreen');
 }
 
-/* ══════════════════════════════
-   ROUTE DETAIL
-══════════════════════════════ */
+/* ── ROUTE DETAIL ── */
 function renderDetail() {
   const r     = currentRoute;
-  const stops = r.stops || [];
-
-  $('detailTitle').textContent = `Route ${r.route_number}`;
-  $('detailSub').textContent   =
-    `${fmtDate(r._date)}${r.vehicle ? ' · ' + r.vehicle : ''}${r.vehicle_number ? ' · ' + r.vehicle_number : ''}`;
-
-  const custStops = stops.filter((s, i) => !isWarehouse(s, i));
-  $('detailStats').innerHTML = [
-    custStops.length ? `<div class="ds"><div class="ds-val">${custStops.length}</div><div class="ds-lbl">Stops</div></div>` : '',
-    r.total_distance ? `<div class="ds"><div class="ds-val">${(+r.total_distance).toFixed(0)}</div><div class="ds-lbl">km</div></div>` : '',
-    r.dispatch_time  ? `<div class="ds"><div class="ds-val">${fmtETA(r.dispatch_time)}</div><div class="ds-lbl">Dispatch</div></div>` : '',
-    r.return_time    ? `<div class="ds"><div class="ds-val">${fmtETA(r.return_time)}</div><div class="ds-lbl">Return</div></div>` : '',
-  ].join('');
-
+  const stops = r.stops    || [];
   const checkins = r.checkins || [];
   const photos   = r.photos   || [];
+  const skips    = r.skips    || [];
+  const notes    = r.notes    || [];
+  const trip     = r.trip;
 
+  $('detailTitle').textContent = `Route ${r.route_number}`;
+  $('detailSub').textContent   = `${fmtDate(r._date)}${r.vehicle?' · '+r.vehicle:''}${r.vehicle_number?' · '+r.vehicle_number:''}`;
+
+  const custStops = stops.filter((s,i) => !isWarehouse(s,i));
+  $('detailStats').innerHTML = [
+    custStops.length  ? `<div class="ds"><div class="ds-val">${custStops.length}</div><div class="ds-lbl">Stops</div></div>` : '',
+    r.total_distance  ? `<div class="ds"><div class="ds-val">${(+r.total_distance).toFixed(0)}</div><div class="ds-lbl">km</div></div>` : '',
+    r.dispatch_time   ? `<div class="ds"><div class="ds-val">${fmtETA(r.dispatch_time)}</div><div class="ds-lbl">Dispatch</div></div>` : '',
+    r.return_time     ? `<div class="ds"><div class="ds-val">${fmtETA(r.return_time)}</div><div class="ds-lbl">Return</div></div>` : '',
+  ].join('');
+
+  /* ── TRIP BANNER ── */
+  const tripBanner = $('tripBanner');
+  if (!trip || trip.status === 'not_started') {
+    tripBanner.innerHTML = `<div class="trip-banner not-started" style="margin:16px auto 0;padding:16px 18px;max-width:560px;">
+      <div class="trip-banner-title">🚀 Ready to start?</div>
+      <div class="trip-banner-sub">Tap below when you leave the warehouse</div>
+      <button class="btn-trip start" onclick="startTrip()">Start Trip</button>
+    </div>`;
+  } else if (trip.status === 'in_progress') {
+    tripBanner.innerHTML = `<div class="trip-banner in-progress" style="margin:16px auto 0;padding:16px 18px;max-width:560px;">
+      <div class="trip-banner-title">🟡 Trip in progress</div>
+      <div class="trip-banner-sub">Started at ${fmtTime(trip.started_at)}</div>
+    </div>`;
+  } else {
+    tripBanner.innerHTML = `<div class="trip-banner completed" style="margin:16px auto 0;padding:16px 18px;max-width:560px;">
+      <div class="trip-banner-title">✅ Trip complete</div>
+      <div class="trip-banner-sub">${fmtTime(trip.started_at)} → ${fmtTime(trip.ended_at)} · ${fmtDuration(trip.started_at, trip.ended_at)}</div>
+    </div>`;
+  }
+
+  /* ── STOPS ── */
   $('stopsList').innerHTML = stops.map((stop, idx) => {
     const wh      = isWarehouse(stop, idx);
     const checkin = checkins.find(c => c.stop_index === idx);
     const photo   = photos.find(p => p.stop_index === idx);
+    const skip    = skips.find(s => s.stop_index === idx);
+    const stopNotes = notes.filter(n => n.stop_index === idx);
+    const isOpen  = openStopIdx === idx;
 
     const fullyDone = wh ? !!checkin : (!!checkin && !!photo);
-    const partial   = !wh && !!checkin && !photo;
-    const isOpen    = openStopIdx === idx;
+    const partial   = !wh && !!checkin && !photo && !skip;
+    const skipped   = !!skip;
 
-    const cardCls = wh ? 'wh-card' : fullyDone ? 'done' : partial ? 'partial' : '';
-    const dotCls  = wh ? 'wh' : fullyDone ? 'done' : partial ? 'partial' : 'pending';
-    const dotTxt  = wh ? '🏭' : fullyDone ? '✓' : idx;
+    const cardCls = wh ? 'wh-card' : skipped ? 'skipped' : fullyDone ? 'done' : partial ? 'partial' : '';
+    const dotCls  = wh ? 'wh' : skipped ? 'skipped' : fullyDone ? 'done' : partial ? 'partial' : 'pending';
+    const dotTxt  = wh ? '🏭' : skipped ? '⊘' : fullyDone ? '✓' : idx;
 
     const name   = stopName(stop);
-    const lat    = stop.lat || stop.latitude;
-    const lon    = stop.lon || stop.lng || stop.longitude;
     const weight = stop.weight || stop.totalWeight || stop.crates || '';
     const weightFmt = weight ? (+weight).toFixed(2) : '';
     const eta    = fmtETA(stop.eta || '');
+    const lat    = stop.lat || stop.latitude;
+    const lon    = stop.lon || stop.lng || stop.longitude;
 
     const subParts = [];
-    if (wh) subParts.push('Warehouse — Starting Point');
+    if (wh)      subParts.push('Warehouse — Starting Point');
+    else if (skip) subParts.push(`⊘ Skipped: ${skip.reason || 'No reason given'}`);
     else {
       if (weightFmt) subParts.push(`${weightFmt} kg`);
       if (eta)       subParts.push(`ETA: ${eta}`);
     }
 
-    const mapUrl = (lat && lon)
-      ? `https://maps.google.com/?q=${lat},${lon}`
-      : `https://maps.google.com/?q=${encodeURIComponent(name)}`;
+    const mapUrl = (lat && lon) ? `https://maps.google.com/?q=${lat},${lon}` : `https://maps.google.com/?q=${encodeURIComponent(name)}`;
 
     return `
 <div class="stop-card ${cardCls}" id="sc${idx}">
   <div class="stop-header" onclick="toggleStop(${idx})">
     <div class="stop-dot ${dotCls}">${dotTxt}</div>
     <div class="stop-text">
-      <div class="stop-name${isOpen ? ' full' : ''}">${name}</div>
-      <div class="stop-sub">${subParts.join(' · ') || '&nbsp;'}</div>
+      <div class="stop-name${isOpen?' full':''}">${name}</div>
+      <div class="stop-sub">${subParts.join(' · ')||'&nbsp;'}</div>
     </div>
-    <span class="stop-chevron${isOpen ? ' open' : ''}">›</span>
+    <span class="stop-chevron${isOpen?' open':''}">›</span>
   </div>
 
-  <div class="stop-body${isOpen ? ' open' : ''}" id="sb${idx}">
-
+  <div class="stop-body${isOpen?' open':''}" id="sb${idx}">
     <a class="map-link" href="${mapUrl}" target="_blank" rel="noopener">🗺 Open in Maps</a>
 
-    ${checkin ? `
-      <div class="info-box green">
-        <strong>📍 Arrived</strong> at ${fmtTime(checkin.checked_in_at)}
-        <div class="coords">${(+checkin.lat).toFixed(5)}, ${(+checkin.lon).toFixed(5)}${checkin.accuracy ? ` ±${Math.round(checkin.accuracy)}m` : ''}</div>
-      </div>` : ''}
+    ${checkin ? `<div class="info-box green"><strong>📍 Arrived</strong> at ${fmtTime(checkin.checked_in_at)}<div class="coords">${(+checkin.lat).toFixed(5)}, ${(+checkin.lon).toFixed(5)}${checkin.accuracy?` ±${Math.round(checkin.accuracy)}m`:''}</div></div>` : ''}
 
-    <button class="action-btn btn-checkin" id="btnCI${idx}"
-      onclick="checkIn(${idx})" ${checkin ? 'disabled' : ''}>
-      ${checkin ? '✅ Checked In' : '📍 Mark Arrival & Capture Location'}
-    </button>
-    ${!checkin ? `<p class="ts-note">Records your GPS location + exact arrival time</p>` : ''}
+    ${skipped ? `<div class="info-box red"><strong>⊘ Skipped</strong> at ${fmtTime(skip.skipped_at)}<br>Reason: ${skip.reason||'—'}</div>` : ''}
 
-    ${!wh ? `
-      ${photo ? `<img src="${photo.photo_data}" class="photo-thumb" style="display:block">` : ''}
-      <button class="action-btn btn-photo" id="btnPH${idx}"
-        onclick="triggerPhoto(${idx})" ${photo ? 'disabled' : ''}>
-        ${photo ? '✅ Temperature Photo Saved' : '📷 Take Temperature Photo'}
+    <!-- saved notes -->
+    ${stopNotes.map(n => `<div class="saved-note"><div class="note-label">📝 Note · ${fmtTime(n.created_at)}</div>${n.note}</div>`).join('')}
+
+    <!-- checkin button -->
+    ${!skipped ? `
+      <button class="action-btn btn-checkin" id="btnCI${idx}" onclick="checkIn(${idx})" ${checkin?'disabled':''}>
+        ${checkin ? '✅ Checked In' : '📍 Mark Arrival & Capture Location'}
       </button>
-      ${!photo ? `<p class="ts-note">Opens camera directly on mobile · Records upload time</p>` : ''}
+      ${!checkin ? `<p class="ts-note">Records GPS location + exact arrival time</p>` : ''}
     ` : ''}
 
+    <!-- photo (not for warehouse, not if skipped) -->
+    ${!wh && !skipped ? `
+      ${photo ? `<img src="${photo.photo_data}" class="photo-thumb">` : ''}
+      <button class="action-btn btn-photo" id="btnPH${idx}" onclick="triggerPhoto(${idx})" ${photo?'disabled':''}>
+        ${photo ? '✅ Temperature Photo Saved' : '📷 Take Temperature Photo'}
+      </button>
+      ${!photo ? `<p class="ts-note">Opens rear camera · Records upload time</p>` : ''}
+    ` : ''}
+
+    <!-- note input -->
+    <div class="note-area" id="noteArea${idx}">
+      <textarea id="noteTxt${idx}" placeholder="Type your note here…"></textarea>
+      <button class="note-save" onclick="saveNote(${idx})">Save Note</button>
+    </div>
+    <button class="action-btn btn-note" onclick="toggleNote(${idx})">📝 Add Note</button>
+
+    <!-- skip / unskip -->
+    ${!wh ? `
+      ${!skipped ? `
+        <div class="skip-reasons" id="skipReasons${idx}">
+          <p>Select reason for skipping:</p>
+          <div class="reason-btns">
+            <button class="reason-btn" onclick="skipStop(${idx}, 'Outlet Closed')">Outlet Closed</button>
+            <button class="reason-btn" onclick="skipStop(${idx}, 'Customer Not Available')">Not Available</button>
+            <button class="reason-btn" onclick="skipStop(${idx}, 'Wrong Address')">Wrong Address</button>
+            <button class="reason-btn" onclick="skipStop(${idx}, 'No One to Receive')">No One to Receive</button>
+            <button class="reason-btn" onclick="skipStop(${idx}, 'Other')">Other</button>
+          </div>
+        </div>
+        <button class="action-btn btn-skip" onclick="toggleSkipReasons(${idx})">⊘ Skip This Stop</button>
+      ` : `
+        <button class="action-btn btn-unskip" onclick="unskipStop(${idx})">↩ Undo Skip</button>
+      `}
+    ` : ''}
   </div>
 </div>`;
   }).join('');
+
+  /* ── END TRIP + SUMMARY ── */
+  renderTripSummary();
+}
+
+function renderTripSummary() {
+  const r      = currentRoute;
+  const stops  = r.stops    || [];
+  const checkins = r.checkins || [];
+  const skips    = r.skips    || [];
+  const trip     = r.trip;
+  const custStops = stops.filter((s,i) => !isWarehouse(s,i));
+  const done    = checkins.filter(c => c.stop_index !== 0).length;
+  const skipped = skips.length;
+  const missed  = custStops.length - done - skipped;
+
+  const summary = $('tripSummary');
+
+  if (trip && trip.status === 'completed') {
+    summary.innerHTML = `<div class="trip-summary">
+      <h3>🏁 Trip Summary</h3>
+      <div class="summary-grid">
+        <div class="summary-item"><div class="lbl">Completed</div><div class="val green">${done}</div></div>
+        <div class="summary-item"><div class="lbl">Skipped</div><div class="val red">${skipped}</div></div>
+        <div class="summary-item"><div class="lbl">Trip Start</div><div class="val">${fmtTime(trip.started_at)}</div></div>
+        <div class="summary-item"><div class="lbl">Trip End</div><div class="val">${fmtTime(trip.ended_at)}</div></div>
+        <div class="summary-item"><div class="lbl">Duration</div><div class="val orange">${fmtDuration(trip.started_at, trip.ended_at)}</div></div>
+        <div class="summary-item"><div class="lbl">Total Stops</div><div class="val">${custStops.length}</div></div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if (trip && trip.status === 'in_progress') {
+    summary.innerHTML = `<div style="padding:0 16px 24px;max-width:560px;margin:0 auto;">
+      <button class="btn-trip end" onclick="endTrip()" style="width:100%;padding:16px;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--orange);color:#fff;min-height:54px;">
+        🏁 End Trip
+      </button>
+    </div>`;
+    return;
+  }
+
+  summary.innerHTML = '';
 }
 
 function toggleStop(idx) {
@@ -674,112 +753,169 @@ function toggleStop(idx) {
   renderDetail();
   setTimeout(() => {
     const el = $(`sc${idx}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
   }, 50);
 }
 
-/* ══════════════════════════════
-   CHECK-IN (GPS)
-══════════════════════════════ */
+/* ── TRIP ── */
+async function startTrip() {
+  const res = await postWithQueue(`${API}/api/driver/trip/start`, {
+    driver_phone: driver.phone, driver_name: driver.name,
+    route_date: currentRoute._date, route_number: currentRoute.route_number
+  });
+  const now = new Date().toISOString();
+  currentRoute.trip = { status:'in_progress', started_at: now, ended_at: null };
+  toast('🚀 Trip started!');
+  renderDetail();
+  if (res.offline) toast('Saved offline — will sync when back online', 'warn');
+}
+
+async function endTrip() {
+  const res = await postWithQueue(`${API}/api/driver/trip/end`, {
+    driver_phone: driver.phone,
+    route_date: currentRoute._date, route_number: currentRoute.route_number
+  });
+  const now = new Date().toISOString();
+  currentRoute.trip = { ...currentRoute.trip, status:'completed', ended_at: now };
+  toast('🏁 Trip completed!');
+  renderDetail();
+  if (res.offline) toast('Saved offline — will sync when back online', 'warn');
+}
+
+/* ── CHECK-IN ── */
 function checkIn(stopIdx) {
   const btn = $(`btnCI${stopIdx}`);
   if (!btn || btn.disabled) return;
-  btn.disabled = true;
-  btn.textContent = '📡 Getting GPS…';
+  btn.disabled = true; btn.textContent = '📡 Getting GPS…';
 
   if (!navigator.geolocation) {
-    toast('GPS not supported on this device', true);
+    toast('GPS not supported', true);
     btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
     return;
   }
 
   navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude: lat, longitude: lon, accuracy } = pos.coords;
-    try {
-      const stop = currentRoute.stops[stopIdx];
-      const res = await fetch(`${API}/api/driver/checkin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          driver_phone: driver.phone, driver_name: driver.name,
-          route_date: currentRoute._date, route_number: currentRoute.route_number,
-          stop_index: stopIdx, stop_name: stopName(stop),
-          lat, lon, accuracy,
-          type: isWarehouse(stop, stopIdx) ? 'warehouse' : 'stop'
-        })
-      });
-      if (!res.ok) throw new Error();
+    const { latitude:lat, longitude:lon, accuracy } = pos.coords;
+    const stop = currentRoute.stops[stopIdx];
+    const res = await postWithQueue(`${API}/api/driver/checkin`, {
+      driver_phone: driver.phone, driver_name: driver.name,
+      route_date: currentRoute._date, route_number: currentRoute.route_number,
+      stop_index: stopIdx, stop_name: stopName(stop),
+      lat, lon, accuracy,
+      type: isWarehouse(stop, stopIdx) ? 'warehouse' : 'stop'
+    });
 
-      if (!currentRoute.checkins) currentRoute.checkins = [];
-      currentRoute.checkins = currentRoute.checkins.filter(c => c.stop_index !== stopIdx);
-      currentRoute.checkins.push({ stop_index: stopIdx, lat, lon, accuracy, checked_in_at: new Date().toISOString() });
+    if (!currentRoute.checkins) currentRoute.checkins = [];
+    currentRoute.checkins = currentRoute.checkins.filter(c => c.stop_index !== stopIdx);
+    currentRoute.checkins.push({ stop_index:stopIdx, lat, lon, accuracy, checked_in_at: new Date().toISOString() });
 
-      toast(`📍 Arrival recorded! ±${Math.round(accuracy)}m`);
-      renderDetail();
-      openStopIdx = stopIdx;
-      setTimeout(() => { const sb = $(`sb${stopIdx}`); if (sb) sb.classList.add('open'); }, 0);
-    } catch {
-      toast('Failed to save check-in', true);
-      btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
-    }
+    if (res.offline) toast('📍 Saved offline — will sync when online', 'warn');
+    else toast(`📍 Arrival recorded! ±${Math.round(accuracy)}m`);
+    renderDetail();
+    openStopIdx = stopIdx;
+    setTimeout(() => { const sb=$(`sb${stopIdx}`); if(sb) sb.classList.add('open'); }, 0);
   }, err => {
-    const msgs = {
-      1: 'Location permission denied. Enable GPS in settings.',
-      2: 'Location unavailable. Try moving outdoors.',
-      3: 'GPS timed out. Try again.'
-    };
-    toast(msgs[err.code] || 'GPS error', true);
+    const msgs = { 1:'Location denied. Enable GPS in settings.', 2:'Location unavailable.', 3:'GPS timed out.' };
+    toast(msgs[err.code]||'GPS error', 'err');
     btn.disabled = false; btn.textContent = '📍 Mark Arrival & Capture Location';
-  }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+  }, { enableHighAccuracy:true, timeout:20000, maximumAge:0 });
 }
 
-/* ══════════════════════════════
-   PHOTO UPLOAD
-══════════════════════════════ */
-function triggerPhoto(stopIdx) {
-  pendingPhotoStop = stopIdx;
-  $('photoInput').click();
-}
+/* ── PHOTO ── */
+function triggerPhoto(idx) { pendingPhotoStop=idx; $('photoInput').click(); }
 
 $('photoInput').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file || pendingPhotoStop === null) return;
-  const idx = pendingPhotoStop;
-  pendingPhotoStop = null;
-
+  const idx = pendingPhotoStop; pendingPhotoStop = null;
   const btn = $(`btnPH${idx}`);
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Uploading…'; }
-
+  if (btn) { btn.disabled=true; btn.textContent='⏳ Uploading…'; }
   try {
     const compressed = await compressImage(file, 1024, 0.80);
     const stop = currentRoute.stops[idx];
     const res = await fetch(`${API}/api/driver/photo`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         driver_phone: driver.phone, driver_name: driver.name,
         route_date: currentRoute._date, route_number: currentRoute.route_number,
-        stop_index: idx, stop_name: stopName(stop),
-        photo_data: compressed
+        stop_index: idx, stop_name: stopName(stop), photo_data: compressed
       })
     });
     if (!res.ok) throw new Error();
-
-    if (!currentRoute.photos) currentRoute.photos = [];
-    currentRoute.photos = currentRoute.photos.filter(p => p.stop_index !== idx);
-    currentRoute.photos.push({ stop_index: idx, photo_data: compressed });
-
+    if (!currentRoute.photos) currentRoute.photos=[];
+    currentRoute.photos = currentRoute.photos.filter(p=>p.stop_index!==idx);
+    currentRoute.photos.push({ stop_index:idx, photo_data:compressed });
     toast('📷 Temperature photo saved!');
-    renderDetail();
-    openStopIdx = idx;
-    setTimeout(() => { const sb = $(`sb${idx}`); if (sb) sb.classList.add('open'); }, 0);
+    renderDetail(); openStopIdx=idx;
+    setTimeout(() => { const sb=$(`sb${idx}`); if(sb) sb.classList.add('open'); }, 0);
   } catch {
-    toast('Photo upload failed', true);
-    if (btn) { btn.disabled = false; btn.textContent = '📷 Take Temperature Photo'; }
+    toast('Photo upload failed', 'err');
+    if (btn) { btn.disabled=false; btn.textContent='📷 Take Temperature Photo'; }
   }
-  e.target.value = '';
+  e.target.value='';
 });
 
+/* ── NOTES ── */
+function toggleNote(idx) {
+  const area = $(`noteArea${idx}`);
+  area.classList.toggle('open');
+  if (area.classList.contains('open')) $(`noteTxt${idx}`).focus();
+}
+
+async function saveNote(idx) {
+  const txt = $(`noteTxt${idx}`).value.trim();
+  if (!txt) return;
+  const stop = currentRoute.stops[idx];
+  const res = await postWithQueue(`${API}/api/driver/note`, {
+    driver_phone: driver.phone, driver_name: driver.name,
+    route_date: currentRoute._date, route_number: currentRoute.route_number,
+    stop_index: idx, stop_name: stopName(stop), note: txt
+  });
+  if (!currentRoute.notes) currentRoute.notes=[];
+  currentRoute.notes.push({ stop_index:idx, note:txt, created_at: new Date().toISOString() });
+  toast('📝 Note saved!');
+  renderDetail(); openStopIdx=idx;
+  setTimeout(() => { const sb=$(`sb${idx}`); if(sb) sb.classList.add('open'); }, 0);
+  if (res.offline) toast('Saved offline — will sync when online', 'warn');
+}
+
+/* ── SKIP ── */
+function toggleSkipReasons(idx) {
+  const el = $(`skipReasons${idx}`);
+  el.classList.toggle('open');
+}
+
+async function skipStop(idx, reason) {
+  const stop = currentRoute.stops[idx];
+  const res = await postWithQueue(`${API}/api/driver/skip`, {
+    driver_phone: driver.phone, driver_name: driver.name,
+    route_date: currentRoute._date, route_number: currentRoute.route_number,
+    stop_index: idx, stop_name: stopName(stop), reason
+  });
+  if (!currentRoute.skips) currentRoute.skips=[];
+  currentRoute.skips = currentRoute.skips.filter(s=>s.stop_index!==idx);
+  currentRoute.skips.push({ stop_index:idx, reason, skipped_at: new Date().toISOString() });
+  toast(`⊘ Stop skipped: ${reason}`);
+  openStopIdx = null;
+  renderDetail();
+  if (res.offline) toast('Saved offline — will sync when online', 'warn');
+}
+
+async function unskipStop(idx) {
+  try {
+    await fetch(`${API}/api/driver/skip`, {
+      method:'DELETE', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ driver_phone:driver.phone, route_date:currentRoute._date, route_number:currentRoute.route_number, stop_index:idx })
+    });
+  } catch {}
+  currentRoute.skips = (currentRoute.skips||[]).filter(s=>s.stop_index!==idx);
+  toast('↩ Stop restored');
+  openStopIdx=idx;
+  renderDetail();
+  setTimeout(() => { const sb=$(`sb${idx}`); if(sb) sb.classList.add('open'); }, 0);
+}
+
+/* ── IMAGE COMPRESSION ── */
 function compressImage(file, maxW, quality) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -788,11 +924,11 @@ function compressImage(file, maxW, quality) {
       const img = new Image();
       img.onerror = reject;
       img.onload = () => {
-        let { width: w, height: h } = img;
-        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        let { width:w, height:h } = img;
+        if (w > maxW) { h=Math.round(h*maxW/w); w=maxW; }
         const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = ev.target.result;
