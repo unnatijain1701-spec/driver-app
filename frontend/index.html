@@ -39,8 +39,10 @@
     }
 
     /* ── SCREENS ── */
-    .screen { display: none; min-height: 100dvh; }
+    .screen { display: none; min-height: 100dvh; position: relative; }
     .screen.active { display: block; }
+    #loginScreen { position: fixed; inset: 0; z-index: 10; overflow-y: auto; }
+    #loginScreen:not(.active) { display: none; }
 
     /* ── SCREEN TRANSITION ── */
     .screen.slide-in {
@@ -479,9 +481,6 @@ async function login() {
 
     driver = data.driver;
 
-    /* show success flash on login screen first */
-    $('successName').textContent = driver.name || 'Driver';
-    $('loginSuccess').classList.add('show');
     btn.textContent = '✅ Signed in!';
 
     /* update nav */
@@ -494,6 +493,9 @@ async function login() {
     setTimeout(() => {
       showScreen('routesScreen');
       loadRoutes();
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     }, 900);
 
   } catch {
