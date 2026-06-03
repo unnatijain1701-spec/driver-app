@@ -460,7 +460,12 @@ function fmtDuration(startIso, endIso) {
 }
 
 function stopName(s) { return s.name || s.outlet || s.outletName || s.customer || 'Stop'; }
-function isWarehouse(s, idx) { return idx === 0; }
+function isWarehouse(s, idx) {
+  if (s && s.isWarehouse === true) return true;
+  if (s && s.type === 'warehouse') return true;
+  const n = (s && (s.name || s.outlet || s.outletName || s.customer) || '').toLowerCase();
+  return n.includes('urban harvest') || n.includes('warehouse') || n.includes('depot');
+}
 
 /* ── LOGIN ── */
 async function login() {
